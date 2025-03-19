@@ -15,7 +15,7 @@ public class Window {
         frame.getContentPane().setLayout(null);
         frame.setSize(500,500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JButton button = new JButton("Click Me");
+        JButton button = new JButton("Move 1");
         button.setSize(100,20);
         button.setLocation(0,440);
         frame.add(button);
@@ -24,16 +24,30 @@ public class Window {
         square.setBackground(Color.RED);
         Timer timer = new Timer(1000/60,new MyActionListener());
         timer.start();
-        frame.setVisible(true);
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 buttonPressed();
             }
         } );
+        JButton button2 = new JButton("Move 2");
+
+        button2.setSize(100,20);
+        button2.setLocation(100,440);
+        frame.add(button2);
+        button2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                button2Pressed();
+            }
+        } );
+        frame.setVisible(true);
     }
     public static void buttonPressed(){
         System.out.println("button clicked!");
     }
+    public static void button2Pressed(){
+        System.out.println("button2 clicked!");
+    }
+
 
     public static class MyActionListener implements ActionListener{
         @Override
