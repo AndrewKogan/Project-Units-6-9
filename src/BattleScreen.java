@@ -98,15 +98,15 @@ public class BattleScreen extends JFrame {
         int actualAIDamage = aiAttack;
 
         if (hasAdvantage(playerType, aiType)) {
-            actualAIDamage *= 0.9;
+            actualAIDamage *= 0.8;
         }
 
         if (hasAdvantage(aiType, playerType)) {
-            actualPlayerDamage *= 0.9;
+            actualPlayerDamage *= 0.8;
         }
 
-        boolean playerDodged = rand.nextInt(100) < 3; // Random number from 0 to 99, 3% chance
-        boolean aiDodged = rand.nextInt(100) < 3; // Same for AI
+        boolean playerDodged = rand.nextInt(100) < 2; // Random number from 0 to 99, 3% chance
+        boolean aiDodged = rand.nextInt(100) < 2; // Same for AI
 
         if (!aiDodged) {
             aiHP -= actualPlayerDamage;
@@ -124,6 +124,12 @@ public class BattleScreen extends JFrame {
                 animateHit(playerPanel);
         } else {
             showDodgeEffect("You Dodged!");
+        }
+
+        if (aiHP <= 0 && playerHP <= 0) {
+            logLabel.setText("Tie");
+            attackButton.setEnabled(false);
+            return;
         }
 
 
@@ -177,7 +183,7 @@ public class BattleScreen extends JFrame {
         repaint(); // Refresh screen to show dodge label
 
         // Hide the dodge message after 2 seconds
-        Timer timer = new Timer(2000, new ActionListener() {
+        Timer timer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 remove(dodgeLabel);
