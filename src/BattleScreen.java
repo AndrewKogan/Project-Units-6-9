@@ -27,7 +27,6 @@ public class BattleScreen extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Parse player stats
         String[] stats = playerStats.split("\n");
         playerHP = Integer.parseInt(stats[1].split(": ")[1]);
         playerAttack = Integer.parseInt(stats[2].split(": ")[1]);
@@ -105,8 +104,8 @@ public class BattleScreen extends JFrame {
             actualPlayerDamage *= 0.8;
         }
 
-        boolean playerDodged = rand.nextInt(100) < 2; // Random number from 0 to 99, 3% chance
-        boolean aiDodged = rand.nextInt(100) < 2; // Same for AI
+        boolean playerDodged = rand.nextInt(100) < 2;
+        boolean aiDodged = rand.nextInt(100) < 2;
 
         if (!aiDodged) {
             aiHP -= actualPlayerDamage;
@@ -117,8 +116,7 @@ public class BattleScreen extends JFrame {
             showDodgeEffect("AI Dodged!");
         }
         if (!playerDodged) {
-            int finalActualAIDamage = actualAIDamage;
-                playerHP -= finalActualAIDamage;
+            playerHP -= actualAIDamage;
                 if (playerHP < 0) playerHP = 0;
                 updatePanel(playerPanel, playerStatsLabel, playerHealthBar, playerName, playerHP, playerAttack, MAX_PLAYER_HP, playerType);
                 animateHit(playerPanel);
@@ -142,7 +140,6 @@ public class BattleScreen extends JFrame {
         if (playerHP <= 0) {
             logLabel.setText(aiName + " wins!");
             attackButton.setEnabled(false);
-            return;
         }
     }
 
@@ -180,9 +177,8 @@ public class BattleScreen extends JFrame {
         dodgeLabel.setBounds(getWidth() / 2 - 150, getHeight() / 2 - 30, 300, 60);  // Center of the screen
 
         add(dodgeLabel);
-        repaint(); // Refresh screen to show dodge label
+        repaint();
 
-        // Hide the dodge message after 2 seconds
         Timer timer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
