@@ -1,58 +1,73 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.HashMap;
+import java.util.*;
 
-public class CharacterSelectionFrame {
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(CharacterSelectionFrame::new);
-    }
+public class CharacterSelectionFrame extends JFrame {
+    private StatsPanel statsPanel;
+    private String selectedCharacterName;
+    private String selectedCharacterStats;
 
     public CharacterSelectionFrame() {
-        JFrame frame = new JFrame("Character Selection");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
-        frame.setLayout(new GridLayout(1, 2)); // Split the frame into two halves
+        setTitle("Character Selection");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(800, 600);
+        setLayout(new GridLayout(1, 2));
 
-        // Left panel for character selection
-        JPanel leftPanel = new JPanel();
-        leftPanel.setLayout(new GridLayout(5, 3, 5, 5)); // 5x3 grid for characters
+        statsPanel = new StatsPanel();
+
+        JPanel leftPanel = new JPanel(new GridLayout(5, 3, 5, 5));
         leftPanel.setBorder(BorderFactory.createTitledBorder("Characters"));
 
-        // Right panel for character stats
-        JPanel rightPanel = new JPanel();
-        rightPanel.setLayout(new BorderLayout());
-        rightPanel.setBorder(BorderFactory.createTitledBorder("Character Stats"));
+        Random rand = new Random();
+        String[] types = {"Fire", "Water", "Earth", "Wind", "Light", "Dark"};
 
-        // Label to display character stats
-        JLabel statsLabel = new JLabel("Select a character to view stats", JLabel.CENTER);
-        statsLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        rightPanel.add(statsLabel, BorderLayout.CENTER);
-
-        // Data for characters
-        HashMap<String, String> characterStats = new HashMap<>();
         for (int i = 1; i <= 15; i++) {
-            characterStats.put("Character " + i, "Stats for Character " + i + ": \nHealth: " + (50 + i) + "\nStrength: " + (10 + i));
-        }
+            String name = "Character " + i;
+            int hp = rand.nextInt(51) + 70;
+            int attack = rand.nextInt(21) + 15;
+            String type = types[rand.nextInt(types.length)];
 
-        // Adding buttons to the left panel
-        for (int i = 1; i <= 15; i++) {
-            String characterName = "Character " + i;
-            JButton button = new JButton(characterName);
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    statsLabel.setText("<html>" + characterStats.get(characterName).replace("\n", "<br>") + "</html>");
-                }
+            String stats = "Type: " + type + "\nHP: " + hp + "\nAttack: " + attack;
+
+            ImageIcon icon = new ImageIcon("img/img_" + i + ".jpg");
+            Image scaledImage = icon.getImage().getScaledInstance(180, 180, Image.SCALE_SMOOTH);
+            JButton button = new JButton(new ImageIcon(scaledImage));
+
+            button.setToolTipText(name);
+
+            button.addActionListener(e -> {
+                selectedCharacterName = name;
+                selectedCharacterStats = stats;
+                statsPanel.updateStats(name, stats);
             });
+
             leftPanel.add(button);
         }
 
-        // Add panels to the frame
-        frame.add(leftPanel);
-        frame.add(rightPanel);
 
-        frame.setVisible(true);
+        statsPanel.setChooseButtonListener(e -> {
+            if (selectedCharacterName != null) {
+                openCharacterScreen(selectedCharacterName);
+                this.setVisible(false);
+            }
+        });
+
+        add(leftPanel);
+        add(statsPanel);
+
+        setVisible(true);
+    }
+
+    private void openCharacterScreen(String characterName) {
+        JFrame characterFrame = new JFrame(characterName + "'s Screen");
+        characterFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        characterFrame.setSize(400, 300);
+        characterFrame.setLocationRelativeTo(this);
+
+        JLabel label = new JLabel("Welcome, " + characterName + "!", SwingConstants.CENTER);
+        label.setFont(new Font("Arial", Font.BOLD, 20));
+
+        characterFrame.add(label, BorderLayout.CENTER);
+        characterFrame.setVisible(true);
     }
 }
