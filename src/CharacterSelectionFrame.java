@@ -6,6 +6,7 @@ public class CharacterSelectionFrame extends JFrame {
     private StatsPanel statsPanel;
     private String selectedCharacterName;
     private String selectedCharacterStats;
+    private String type;
 
     public CharacterSelectionFrame() {
         setTitle("Character Selection");
@@ -19,13 +20,13 @@ public class CharacterSelectionFrame extends JFrame {
         leftPanel.setBorder(BorderFactory.createTitledBorder("Characters"));
 
         Random rand = new Random();
-        String[] types = {"Fire", "Water", "Earth", "Wind", "Light", "Dark"};
+        String[] types = {"Fire", "Water", "Earth"};
 
         for (int i = 1; i <= 15; i++) {
             String name = "Character " + i;
             int hp = rand.nextInt(51) + 70;
             int attack = rand.nextInt(21) + 15;
-            String type = types[rand.nextInt(types.length)];
+            type = types[rand.nextInt(types.length)];
 
             String stats = "Type: " + type + "\nHP: " + hp + "\nAttack: " + attack;
 
@@ -39,6 +40,7 @@ public class CharacterSelectionFrame extends JFrame {
                 selectedCharacterName = name;
                 selectedCharacterStats = stats;
                 statsPanel.updateStats(name, stats);
+
             });
 
             leftPanel.add(button);
@@ -47,7 +49,7 @@ public class CharacterSelectionFrame extends JFrame {
 
         statsPanel.setChooseButtonListener(e -> {
             if (selectedCharacterName != null) {
-                openCharacterScreen(selectedCharacterName);
+                new BattleScreen(selectedCharacterName, selectedCharacterStats, type);
                 this.setVisible(false);
             }
         });
@@ -56,18 +58,5 @@ public class CharacterSelectionFrame extends JFrame {
         add(statsPanel);
 
         setVisible(true);
-    }
-
-    private void openCharacterScreen(String characterName) {
-        JFrame characterFrame = new JFrame(characterName + "'s Screen");
-        characterFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        characterFrame.setSize(400, 300);
-        characterFrame.setLocationRelativeTo(this);
-
-        JLabel label = new JLabel("Welcome, " + characterName + "!", SwingConstants.CENTER);
-        label.setFont(new Font("Arial", Font.BOLD, 20));
-
-        characterFrame.add(label, BorderLayout.CENTER);
-        characterFrame.setVisible(true);
     }
 }
