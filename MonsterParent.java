@@ -4,9 +4,9 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class MonsterParent {
-    int defenseValue;
-    String type;
-    String fighterName;
+    private int defenseValue;
+    private String type;
+    private String fighterName;
     public MonsterParent(int defenseValue, String type, String name){
         this.defenseValue = defenseValue;
         this.type = type;
@@ -23,18 +23,5 @@ public class MonsterParent {
 
     public String getFighterName() {
         return fighterName;
-    }
-
-    public boolean typeAdvantage(MonsterParent opponent){
-        if(opponent.type.equalsIgnoreCase("water") && type.equalsIgnoreCase("grass")){
-            return true;
-        }
-        if(opponent.type.equalsIgnoreCase("fire") && type.equalsIgnoreCase("water")){
-            return true;
-        }
-        if(opponent.type.equalsIgnoreCase("grass") && type.equalsIgnoreCase("fire")){
-            return true;
-        }
-        return false;
     }
 }

@@ -1,6 +1,7 @@
 public class Matthew extends Fairy{
     public Matthew(){
-        super(100, "ROTTONDII");
+        super(100, "Mattypoo");
     }
+
 
 }
