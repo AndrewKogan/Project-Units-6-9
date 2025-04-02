@@ -2,9 +2,19 @@ import java.util.*;
 public class Fairy extends MonsterParent{
     private ArrayList<Move> moveSet = new ArrayList<>();
 
-    public Fairy(int defenseValue, String name){
-        super(defenseValue, "Fairy", name);
-        moveSet.add(new Move("lullaby",0, "fairy", 60, "sleep"));
-        moveSet.add(new Move("",40, "fairy", 100, "none"));
+    public Fairy(int defenseValue, String name, int speedValue){
+        super(defenseValue, "Fairy", name, speedValue);
+        moveSet.add(new Move("Lullaby",0, "fairy", 60, "sleep"));
+        moveSet.add(new Move("Poisoned Scales",0, "fairy", 60, "poison"));
+        moveSet.add(new Move("Wing Smash",40, "fairy", 100, "none"));
+        moveSet.add(new Move("Moonblast",60, "fairy", 100, "none"));
+        moveSet.add(new Move("Blessing",0, "fairy", 100, "hp+"));
+        moveSet.add(new Move("Star Song",0, "fairy", 100, "attack+"));
+        moveSet.add(new Move("Sparkle",60, "fairy", 100, "none"));
+        moveSet.add(new Move("Flower Nuke",80, "fairy", 70, "none"));
+    }
+
+    public ArrayList<Move> fairyGetMoveSet(){
+        return moveSet;
     }
 }
