@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class Matthew extends Fairy{
     private ArrayList<Move> moveSet = new ArrayList<>();
     public Matthew(){
-        super(100, "Mattypoo", 50);
+        super(500, "Mattypoo", 50);
     }
     public void createMoveSet(){
         for(int i = 0; i < 3;i++){
@@ -14,6 +14,7 @@ public class Matthew extends Fairy{
             else{
                 moveSet.add(fairyGetMoveSet().get((int) (Math.random() * fairyGetMoveSet().size())));
             }
+            moveSet.add(new Move("Chicken Jockeyyyy", 90, "fairy", 100, "none", 5));
         }
 
     }
