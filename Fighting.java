@@ -1,6 +1,6 @@
 import java.util.*;
 public class Fighting extends MonsterParent{
-    private ArrayList<Move> moveSet = new ArrayList<>();
+    private static ArrayList<Move> moveSet = new ArrayList<>();
 
     public Fighting(int defenseValue, String name, int speedValue){
         super(defenseValue, "Fighting", name, speedValue);
@@ -12,7 +12,7 @@ public class Fighting extends MonsterParent{
         moveSet.add(new Move("Final Stand",100, "fighting", 50, "none"));
     }
 
-    public ArrayList<Move> fightingGetMoveSet(){
+    public static ArrayList<Move> fightingGetMoveSet(){
         return moveSet;
     }
 }

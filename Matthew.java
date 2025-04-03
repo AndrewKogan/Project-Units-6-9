@@ -9,7 +9,7 @@ public class Matthew extends Fairy{
         for(int i = 0; i < 3;i++){
             double random = Math.random();
             if(random<=.33){
-                moveSet.add(fightingGetMoveSet().get((int) (Math.random() * fightingGetMoveSet().size())));
+                moveSet.add(Fighting.fightingGetMoveSet().get((int) (Math.random() * Fighting.fightingGetMoveSet().size())));
             }
             else{
                 moveSet.add(fairyGetMoveSet().get((int) (Math.random() * fairyGetMoveSet().size())));
@@ -17,5 +17,6 @@ public class Matthew extends Fairy{
         }
 
     }
+
 
 }

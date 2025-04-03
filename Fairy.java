@@ -1,6 +1,6 @@
 import java.util.*;
 public class Fairy extends MonsterParent{
-    private ArrayList<Move> moveSet = new ArrayList<>();
+    private static ArrayList<Move> moveSet = new ArrayList<>();
 
     public Fairy(int defenseValue, String name, int speedValue){
         super(defenseValue, "Fairy", name, speedValue);
@@ -14,7 +14,7 @@ public class Fairy extends MonsterParent{
         moveSet.add(new Move("Flower Nuke",80, "fairy", 70, "none"));
     }
 
-    public ArrayList<Move> fairyGetMoveSet(){
+    public static ArrayList<Move> fairyGetMoveSet(){
         return moveSet;
     }
 }
