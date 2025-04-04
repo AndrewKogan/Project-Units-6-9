@@ -1,66 +1,107 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Random;
 
 public class BattleScreen extends JFrame {
     private int playerHP, aiHP;
     private int playerAttack, aiAttack;
-    private final int MAX_PLAYER_HP;
-    private final int MAX_AI_HP;
+    private final int MAX_PLAYER_HP, MAX_AI_HP;
     private String playerType, aiType;
+    private int waterStrongCooldown = 0;
+    private int strongAttackCooldown = 0;
+    private int fireballCooldown = 0;
+    private int earthquakeCooldown = 0;
+    private double playerDefense = 1.0;  // Default defense multiplier (1.0 means no effect)
 
 
     private JLabel playerStatsLabel, aiStatsLabel, logLabel;
-    private JButton attackButton;
+    private JButton healButton, strongAttackButton, normalAttackButton, typeSpecialButton, attackButton;
     private String playerName, aiName;
 
     private JProgressBar playerHealthBar, aiHealthBar;
     private JPanel playerPanel, aiPanel;
 
     public BattleScreen(String playerName, String playerStats, String playerType) {
-        this.playerType = playerType;
-        this.playerName = playerName;
-        setTitle("Battle Screen");
-        setSize(700, 400);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+            this.playerType = playerType;
+            this.playerName = playerName;
+            setTitle("Battle Screen");
+            setSize(700, 400);
+            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            setLayout(new BorderLayout());
 
-        String[] stats = playerStats.split("\n");
-        playerHP = Integer.parseInt(stats[1].split(": ")[1]);
-        playerAttack = Integer.parseInt(stats[2].split(": ")[1]);
-        MAX_PLAYER_HP = playerHP;
+            String[] stats = playerStats.split("\n");
+            playerHP = Integer.parseInt(stats[1].split(": ")[1]);
+            playerAttack = Integer.parseInt(stats[2].split(": ")[1]);
+            MAX_PLAYER_HP = playerHP;
 
-        Random rand = new Random();
-        aiName = "AI Character";
-        String[] types = {"Fire", "Water", "Earth"};
-        int aiTypeIndex = rand.nextInt(types.length);
-        aiType = types[aiTypeIndex];
-        aiHP = rand.nextInt(51) + 70;
-        aiAttack = rand.nextInt(21) + 15;
-        MAX_AI_HP = aiHP;
+            Random rand = new Random();
+            aiName = "AI Character";
+            String[] types = {"Fire", "Water", "Earth"};
+            aiType = types[rand.nextInt(types.length)];
+            aiHP = rand.nextInt(51) + 70;
+            aiAttack = rand.nextInt(21) + 15;
+            MAX_AI_HP = aiHP;
 
-        playerPanel = createCharacterPanel(playerName, playerHP, playerAttack);
-        aiPanel = createCharacterPanel(aiName, aiHP, aiAttack);
+            playerPanel = createCharacterPanel(playerName, playerHP, playerAttack);
+            aiPanel = createCharacterPanel(aiName, aiHP, aiAttack);
 
-        JPanel topPanel = new JPanel(new GridLayout(1, 2));
-        topPanel.add(playerPanel);
-        topPanel.add(aiPanel);
+            JPanel topPanel = new JPanel(new GridLayout(1, 2));
+            topPanel.add(playerPanel);
+            topPanel.add(aiPanel);
 
-        logLabel = new JLabel("Click 'Attack' to begin!", SwingConstants.CENTER);
-        logLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+            logLabel = new JLabel("Click a move to begin!", SwingConstants.CENTER);
+            logLabel.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        attackButton = new JButton("Attack");
-        attackButton.addActionListener(e -> doBattle());
+            if (playerType.equals("Water")) {
+                JPanel movePanel = new JPanel(new GridLayout(2, 2));
 
-        add(topPanel, BorderLayout.NORTH);
-        add(logLabel, BorderLayout.CENTER);
-        add(attackButton, BorderLayout.SOUTH);
+                healButton = new JButton("Heal");
+                strongAttackButton = new JButton("Strong Attack");
+                normalAttackButton = new JButton("Normal Attack");
+                typeSpecialButton = new JButton("Water Surge");
 
-        setLocationRelativeTo(null);
-        setVisible(true);
-    }
+                healButton.addActionListener(e -> performWaterMove("heal"));
+                strongAttackButton.addActionListener(e -> performWaterMove("strong"));
+                normalAttackButton.addActionListener(e -> performWaterMove("normal"));
+                typeSpecialButton.addActionListener(e -> performWaterMove("special"));
+
+                movePanel.add(healButton);
+                movePanel.add(strongAttackButton);
+                movePanel.add(normalAttackButton);
+                movePanel.add(typeSpecialButton);
+
+                add(movePanel, BorderLayout.SOUTH);
+            }if (playerType.equals("Fire")) {
+                JPanel movePanel = new JPanel(new GridLayout(2, 2));
+
+                healButton = new JButton("Heal");
+                strongAttackButton = new JButton("Strong Attack");
+                normalAttackButton = new JButton("Normal Attack");
+                typeSpecialButton = new JButton("Water Surge");
+
+                healButton.addActionListener(e -> performFireMove("heal"));
+                strongAttackButton.addActionListener(e -> performFireMove("strong"));
+                normalAttackButton.addActionListener(e -> performFireMove("normal"));
+                typeSpecialButton.addActionListener(e -> performFireMove("special"));
+
+                movePanel.add(healButton);
+                movePanel.add(strongAttackButton);
+                movePanel.add(normalAttackButton);
+                movePanel.add(typeSpecialButton);
+
+                add(movePanel, BorderLayout.SOUTH);
+            } else {
+                attackButton = new JButton("Attack");
+                attackButton.addActionListener(e -> doBattle());
+                add(attackButton, BorderLayout.SOUTH);
+            }
+
+            add(topPanel, BorderLayout.NORTH);
+            add(logLabel, BorderLayout.CENTER);
+            setLocationRelativeTo(null);
+            setVisible(true);
+        }
 
     private JPanel createCharacterPanel(String name, int hp, int attack) {
         JPanel panel = new JPanel(new BorderLayout(5, 5));
@@ -82,84 +123,137 @@ public class BattleScreen extends JFrame {
 
         panel.add(stats, BorderLayout.NORTH);
         panel.add(healthBar, BorderLayout.SOUTH);
-
         return panel;
     }
 
-    private void doBattle() {
-
-        Random rand = new Random();
-
-
+    private void performWaterMove(String moveType) {
         if (playerHP <= 0 || aiHP <= 0) return;
 
-        int actualPlayerDamage = playerAttack;
-        int actualAIDamage = aiAttack;
+        Random rand = new Random();
+        int playerDamage = 0;
+        String actionText = "";
 
-        if (hasAdvantage(playerType, aiType)) {
-            actualAIDamage *= 0.8;
+        switch (moveType) {
+            case "heal":
+                int healAmount = 20;
+                playerHP = Math.min(MAX_PLAYER_HP, playerHP + healAmount);
+                updatePanel(playerPanel, playerStatsLabel, playerHealthBar, playerName, playerHP, MAX_PLAYER_HP);
+                actionText = "You healed for " + healAmount + " HP!";
+                break;
+
+            case "strong":
+                if (waterStrongCooldown > 0) {
+                    logLabel.setText("Strong Attack is on cooldown!");
+                    return;
+                }
+                playerDamage = playerAttack + 20;
+                aiHP -= playerDamage;
+                waterStrongCooldown = 2;
+                actionText = "Strong Attack dealt " + playerDamage + " damage!";
+                animateHit(aiPanel);
+                break;
+
+            case "normal":
+                playerDamage = playerAttack;
+                aiHP -= playerDamage;
+                actionText = "Normal Attack dealt " + playerDamage + " damage!";
+                animateHit(aiPanel);
+                break;
+
+            case "special":
+                playerDamage = hasAdvantage("Water", aiType) ? playerAttack + 15 : playerAttack;
+                aiHP -= playerDamage;
+                actionText = "Water Surge dealt " + playerDamage + " damage!";
+                animateHit(aiPanel);
+                break;
         }
 
+        if (aiHP < 0) aiHP = 0;
+        updatePanel(aiPanel, aiStatsLabel, aiHealthBar, aiName, aiHP, MAX_AI_HP);
+        logLabel.setText(actionText);
+
+        doAIAttack();
+
+        if (waterStrongCooldown > 0) waterStrongCooldown--;
+    }
+
+    private void doBattle() {
+        if (playerHP <= 0 || aiHP <= 0) return;
+
+        Random rand = new Random();
+        int playerDamage = playerAttack;
+        aiHP -= playerDamage;
+        animateHit(aiPanel);
+        logLabel.setText(playerName + " dealt " + playerDamage + " damage!");
+
+        if (aiHP <= 0) {
+            aiHP = 0;
+            updatePanel(aiPanel, aiStatsLabel, aiHealthBar, aiName, aiHP, MAX_AI_HP);
+            logLabel.setText(playerName + " wins!");
+            disableAllButtons();
+            return;
+        }
+
+        updatePanel(aiPanel, aiStatsLabel, aiHealthBar, aiName, aiHP, MAX_AI_HP);
+
+        Timer timer = new Timer(1000, e -> doAIAttack());
+        timer.setRepeats(false);
+        timer.start();
+    }
+
+
+    private void doAIAttack() {
+        if (playerHP <= 0 || aiHP <= 0) return;
+
+        Random rand = new Random();
+        boolean playerDodged = rand.nextInt(100) < 10;
+
+        int damage = aiAttack;
         if (hasAdvantage(aiType, playerType)) {
-            actualPlayerDamage *= 0.8;
+            damage *= 1.2;
         }
 
-        boolean playerDodged = rand.nextInt(100) < 2;
-        boolean aiDodged = rand.nextInt(100) < 2;
-
-        if (!aiDodged) {
-            aiHP -= actualPlayerDamage;
-            if (aiHP < 0) aiHP = 0;
-            updatePanel(aiPanel, aiStatsLabel, aiHealthBar, aiName, aiHP, aiAttack, MAX_AI_HP, aiType);
-            animateHit(aiPanel);
-        } else {
-            showDodgeEffect("AI Dodged!");
-        }
         if (!playerDodged) {
-            playerHP -= actualAIDamage;
-                if (playerHP < 0) playerHP = 0;
-                updatePanel(playerPanel, playerStatsLabel, playerHealthBar, playerName, playerHP, playerAttack, MAX_PLAYER_HP, playerType);
-                animateHit(playerPanel);
+            playerHP -= damage;
+            if (playerHP < 0) playerHP = 0;
+            updatePanel(playerPanel, playerStatsLabel, playerHealthBar, playerName, playerHP, MAX_PLAYER_HP);
+            animateHit(playerPanel);
         } else {
             showDodgeEffect("You Dodged!");
         }
 
-        if (aiHP <= 0 && playerHP <= 0) {
-            logLabel.setText("Tie");
-            attackButton.setEnabled(false);
-            return;
-        }
-
-
-        if (aiHP <= 0) {
-            logLabel.setText(playerName + " wins!");
-            attackButton.setEnabled(false);
-            return;
-        }
-
         if (playerHP <= 0) {
             logLabel.setText(aiName + " wins!");
-            attackButton.setEnabled(false);
+            disableAllButtons();
+        } else if (aiHP <= 0) {
+            logLabel.setText(playerName + " wins!");
+            disableAllButtons();
         }
     }
 
-    private void updatePanel(JPanel panel, JLabel label, JProgressBar bar, String name, int hp, int atk, int maxHp, String type) {
-        label.setText("HP: " + hp + " | ATK: " + atk + " | Type: " + type);
+    private void animateHit(JPanel panel) {
+        Color originalColor = panel.getBackground();
+        panel.setBackground(Color.RED);
+        Timer timer = new Timer(200, e -> panel.setBackground(originalColor));
+        timer.setRepeats(false);
+        timer.start();
+    }
+
+    private void showDodgeEffect(String message) {
+        logLabel.setText(message);
+        Timer timer = new Timer(500, e -> logLabel.setText(""));
+        timer.setRepeats(false);
+        timer.start();
+    }
+
+    private void updatePanel(JPanel panel, JLabel label, JProgressBar bar, String name, int hp, int maxHp) {
+        label.setText("HP: " + hp);
         bar.setMaximum(maxHp);
         bar.setValue(hp);
-
 
         if (hp < maxHp * 0.3) bar.setForeground(Color.RED);
         else if (hp < maxHp * 0.6) bar.setForeground(Color.ORANGE);
         else bar.setForeground(Color.GREEN);
-    }
-
-    private void animateHit(JPanel targetPanel) {
-        Color original = targetPanel.getBackground();
-        targetPanel.setBackground(Color.RED);
-        Timer t = new Timer(150, e -> targetPanel.setBackground(original));
-        t.setRepeats(false);
-        t.start();
     }
 
     private boolean hasAdvantage(String attackerType, String defenderType) {
@@ -168,27 +262,64 @@ public class BattleScreen extends JFrame {
                 (attackerType.equals("Earth") && defenderType.equals("Water"));
     }
 
-    private void showDodgeEffect(String message) {
-        JLabel dodgeLabel = new JLabel(message, SwingConstants.CENTER);
-        dodgeLabel.setFont(new Font("Arial", Font.BOLD, 36));
-        dodgeLabel.setForeground(Color.RED);
-        dodgeLabel.setOpaque(true);
-        dodgeLabel.setBackground(Color.BLACK);
-        dodgeLabel.setBounds(getWidth() / 2 - 150, getHeight() / 2 - 30, 300, 60);  // Center of the screen
-
-        add(dodgeLabel);
-        repaint();
-
-        Timer timer = new Timer(1000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                remove(dodgeLabel);
-                repaint();
-            }
-        });
-        timer.setRepeats(false);
-        timer.start();
+    private void disableAllButtons() {
+        healButton.setEnabled(false);
+        strongAttackButton.setEnabled(false);
+        normalAttackButton.setEnabled(false);
+        typeSpecialButton.setEnabled(false);
     }
+
+    private void performFireMove(String moveType) {
+        if (playerHP <= 0 || aiHP <= 0) return;
+
+        Random rand = new Random();
+        int playerDamage = 0;
+        String actionText = "";
+
+        switch (moveType) {
+            case "heal":
+                int healAmount = 20;
+                playerHP = Math.min(MAX_PLAYER_HP, playerHP + healAmount);
+                updatePanel(playerPanel, playerStatsLabel, playerHealthBar, playerName, playerHP, MAX_PLAYER_HP);
+                actionText = "You healed for " + healAmount + " HP!";
+                break;
+
+            case "strong":
+                if (waterStrongCooldown > 0) {
+                    logLabel.setText("Strong Attack is on cooldown!");
+                    return;
+                }
+                playerDamage = playerAttack + 20;
+                aiHP -= playerDamage;
+                waterStrongCooldown = 2;
+                actionText = "Strong Attack dealt " + playerDamage + " damage!";
+                animateHit(aiPanel);
+                break;
+
+            case "normal":
+                playerDamage = playerAttack;
+                aiHP -= playerDamage;
+                actionText = "Normal Attack dealt " + playerDamage + " damage!";
+                animateHit(aiPanel);
+                break;
+
+            case "special":
+                playerDamage = hasAdvantage("Fire", aiType) ? playerAttack + 15 : playerAttack;
+                aiHP -= playerDamage;
+                actionText = "Fire Surge dealt " + playerDamage + " damage!";
+                animateHit(aiPanel);
+                break;
+        }
+
+        if (aiHP < 0) aiHP = 0;
+        updatePanel(aiPanel, aiStatsLabel, aiHealthBar, aiName, aiHP, MAX_AI_HP);
+        logLabel.setText(actionText);
+
+        doAIAttack();
+
+        if (waterStrongCooldown > 0) waterStrongCooldown--;
+    }
+
 
 
 }

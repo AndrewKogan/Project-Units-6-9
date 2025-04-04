@@ -39,7 +39,11 @@ public class StatsPanel extends JPanel {
     }
 
     public void setChooseButtonListener(ActionListener listener) {
+        for (ActionListener al : chooseButton.getActionListeners()) {
+            chooseButton.removeActionListener(al);
+        }
         chooseButton.addActionListener(listener);
     }
+
 
 }
