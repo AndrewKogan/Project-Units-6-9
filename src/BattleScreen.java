@@ -1,3 +1,5 @@
+package src;
+
 import org.w3c.dom.CharacterData;
 
 import javax.swing.*;
