@@ -28,7 +28,7 @@ public class CharacterSelectionFrame extends JFrame {
 
             MonsterParent monster = new MonsterParent(defense, type, name, attack);
 
-            String stats = "Type: " + type + "\nDefense: " + defense;
+            String stats = "Type: " + type + "\nDefense: " + defense + "\nAttack: " + attack;
 
             ImageIcon icon = new ImageIcon("img/img_" + i + ".jpg");
             Image scaledImage = icon.getImage().getScaledInstance(180, 180, Image.SCALE_SMOOTH);
