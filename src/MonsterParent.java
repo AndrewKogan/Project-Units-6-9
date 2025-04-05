@@ -1,13 +1,17 @@
-package src;
-
 public class MonsterParent {
     private int defenseValue;
     private String type;
     private String fighterName;
-    public MonsterParent(int defenseValue, String type, String name, int speedValue){
+    private int atk;
+    public MonsterParent(int defenseValue, String type, String name, int atk){
         this.defenseValue = defenseValue;
         this.type = type;
         this.fighterName = name;
+        this.atk = atk;
+    }
+
+    public int getAttack() {
+        return atk;
     }
 
     public int getDefenseValue() {

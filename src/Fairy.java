@@ -1,5 +1,3 @@
-package src;
-
 import java.util.*;
 public class Fairy extends MonsterParent{
     private static ArrayList<Move> moveSet = new ArrayList<>();

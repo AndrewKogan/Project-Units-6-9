@@ -1,7 +1,6 @@
-package src;
-
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public class CharacterSelectionFrame extends JFrame {
@@ -16,13 +15,13 @@ public class CharacterSelectionFrame extends JFrame {
 
         statsPanel = new StatsPanel();
 
-        JPanel leftPanel = new JPanel(new GridLayout(5, 3, 5, 5));
+        JPanel leftPanel = new JPanel(new GridLayout(4, 2, 5, 5));
         leftPanel.setBorder(BorderFactory.createTitledBorder("Characters"));
 
         Random rand = new Random();
         String[] types = {"Fire", "Water", "Earth", "Air"};
 
-        for (int i = 1; i <= 15; i++) {
+        for (int i = 1; i <= 8; i++) {
             String name = "Character " + i;
             int defense = rand.nextInt(51) + 70; // Random defense stat
             String type = types[rand.nextInt(types.length)];
@@ -32,7 +31,8 @@ public class CharacterSelectionFrame extends JFrame {
 
             String stats = "Type: " + type + "\nDefense: " + defense + "\nAttack: " + attack;
 
-            ImageIcon icon = new ImageIcon("img/img_" + i + ".jpg");
+            ImageIcon icon = new ImageIcon("img/img_0" + i + ".jpeg");
+            icon = rotateImageIcon(icon);
             Image scaledImage = icon.getImage().getScaledInstance(180, 180, Image.SCALE_SMOOTH);
             JButton button = new JButton(new ImageIcon(scaledImage));
 
@@ -45,6 +45,7 @@ public class CharacterSelectionFrame extends JFrame {
 
             leftPanel.add(button);
         }
+
 
         statsPanel.setChooseButtonListener(e -> {
             if (selectedMonster != null) {
@@ -63,4 +64,27 @@ public class CharacterSelectionFrame extends JFrame {
 
         setVisible(true);
     }
+
+    public static ImageIcon rotateImageIcon(ImageIcon icon) {
+        int width = icon.getIconWidth();
+        int height = icon.getIconHeight();
+
+        // Create a new image with flipped dimensions
+        BufferedImage original = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = original.createGraphics();
+        g2d.drawImage(icon.getImage(), 0, 0, null);
+        g2d.dispose();
+
+        BufferedImage rotated = new BufferedImage(height, width, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = rotated.createGraphics();
+
+        // Rotate 90 degrees clockwise
+        g.translate(height, 0);
+        g.rotate(Math.toRadians(90));
+        g.drawImage(original, 0, 0, null);
+        g.dispose();
+
+        return new ImageIcon(rotated);
+    }
+
 }

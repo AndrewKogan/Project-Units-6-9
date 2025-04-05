@@ -1,5 +1,3 @@
-package src;
-
 public class Move {
     private int attackValue;
     private String type;

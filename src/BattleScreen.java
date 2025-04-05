@@ -1,7 +1,3 @@
-package src;
-
-import org.w3c.dom.CharacterData;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -52,6 +48,7 @@ public class BattleScreen extends JFrame {
         JPanel topPanel = new JPanel(new GridLayout(1, 2));
         topPanel.add(playerPanel);
         topPanel.add(aiPanel);
+
 
         logLabel = new JLabel("Click a move to begin!", SwingConstants.CENTER);
         logLabel.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -216,6 +213,8 @@ public class BattleScreen extends JFrame {
                 break;
         }
 
+
+
         // Ensure HP doesn't go negative
         if (aiHP < 0) aiHP = 0;
 
@@ -271,6 +270,7 @@ public class BattleScreen extends JFrame {
             if (playerHP < 0) playerHP = 0;
             updatePanel(playerStatsLabel, playerHealthBar, playerHP, MAX_PLAYER_HP, playerAttack);
             animateHit(playerPanel);
+            animateHealthBarLoss(playerPanel, playerHealthBar, damage);
         } else {
             showDodgeEffect("You Dodged!");
         }
@@ -739,7 +739,4 @@ public class BattleScreen extends JFrame {
         });
         timer.start();
     }
-
-
-
 }
