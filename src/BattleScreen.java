@@ -178,7 +178,7 @@ public class BattleScreen extends JFrame {
             case "heal":
                 int healAmount = 20;
                 playerHP = Math.min(MAX_PLAYER_HP, playerHP + healAmount);
-                updatePanel(playerPanel, playerStatsLabel, playerHealthBar, playerName, playerHP, MAX_PLAYER_HP, playerAttack);
+                updatePanel(playerStatsLabel, playerHealthBar, playerHP, MAX_PLAYER_HP, playerAttack);
                 logLabel.setText("You healed for " + healAmount + " HP!");
 
                 // Skip attack animation, go straight to AI move after delay
@@ -234,7 +234,7 @@ public class BattleScreen extends JFrame {
                 }
 
                 // Update AI panel (HP already updated)
-                updatePanel(aiPanel, aiStatsLabel, aiHealthBar, aiName, aiHP, MAX_AI_HP, aiAttack);
+                updatePanel(aiStatsLabel, aiHealthBar, aiHP, MAX_AI_HP, aiAttack);
 
                 // Delay AI's move
                 Timer delay = new Timer(1000, e -> doAIAttack());
@@ -267,7 +267,7 @@ public class BattleScreen extends JFrame {
         if (!playerDodged) {
             playerHP -= damage;
             if (playerHP < 0) playerHP = 0;
-            updatePanel(playerPanel, playerStatsLabel, playerHealthBar, playerName, playerHP, MAX_PLAYER_HP, playerAttack);
+            updatePanel(playerStatsLabel, playerHealthBar, playerHP, MAX_PLAYER_HP, playerAttack);
             animateHit(playerPanel);
         } else {
             showDodgeEffect("You Dodged!");
@@ -301,14 +301,21 @@ public class BattleScreen extends JFrame {
         timer.start();
     }
 
-    private void updatePanel(JPanel panel, JLabel label, JProgressBar bar, String name, int hp, int maxHp, int atk) {
+    private void updatePanel(JLabel label, JProgressBar bar, int hp, int maxHp, int atk) {
         label.setText("HP: " + hp + " | ATK: " + atk);
         bar.setMaximum(maxHp);
-        bar.setValue(hp);
+        int percent = (int) ((hp / (double) maxHp) * 100);
+        if (hp <= 0) {
+            percent = 0;
+            bar.setMaximum(1);
+        }
+        bar.setValue(percent);
+
 
         if (hp < maxHp * 0.3) bar.setForeground(Color.RED);
         else if (hp < maxHp * 0.6) bar.setForeground(Color.ORANGE);
         else bar.setForeground(Color.GREEN);
+
     }
 
     private boolean hasAdvantage(String attackerType, String defenderType) {
@@ -338,7 +345,6 @@ public class BattleScreen extends JFrame {
 
         if (playerHP <= 0 || aiHP <= 0) return;
 
-        Random rand = new Random();
         int playerDamage = 0;
         String actionText = "";
 
@@ -346,7 +352,7 @@ public class BattleScreen extends JFrame {
             case "heal":
                 int healAmount = 20;
                 playerHP = Math.min(MAX_PLAYER_HP, playerHP + healAmount);
-                updatePanel(playerPanel, playerStatsLabel, playerHealthBar, playerName, playerHP, MAX_PLAYER_HP, playerAttack);
+                updatePanel(playerStatsLabel, playerHealthBar, playerHP, MAX_PLAYER_HP, playerAttack);
                 logLabel.setText("You healed for " + healAmount + " HP!");
 
                 // Skip attack animation, go straight to AI move after delay
@@ -383,7 +389,7 @@ public class BattleScreen extends JFrame {
         }
 
         // Ensure HP doesn't go negative
-        if (aiHP < 0) aiHP = 0;
+        if (aiHP <= 0) aiHP = 0;
 
         // Do slide-forward animation, then hit, health bar loss, and logging
         if(!moveType.equals("heal")){
@@ -402,7 +408,7 @@ public class BattleScreen extends JFrame {
                 }
 
                 // Update AI panel (HP already updated)
-                updatePanel(aiPanel, aiStatsLabel, aiHealthBar, aiName, aiHP, MAX_AI_HP, aiAttack);
+                updatePanel(aiStatsLabel, aiHealthBar, aiHP, MAX_AI_HP, aiAttack);
 
                 // Delay AI's move
                 Timer delay = new Timer(1000, e -> doAIAttack());
@@ -435,7 +441,7 @@ public class BattleScreen extends JFrame {
             case "heal":
                 int healAmount = 20;
                 playerHP = Math.min(MAX_PLAYER_HP, playerHP + healAmount);
-                updatePanel(playerPanel, playerStatsLabel, playerHealthBar, playerName, playerHP, MAX_PLAYER_HP, playerAttack);
+                updatePanel(playerStatsLabel, playerHealthBar, playerHP, MAX_PLAYER_HP, playerAttack);
                 logLabel.setText("You healed for " + healAmount + " HP!");
 
                 // Skip attack animation, go straight to AI move after delay
@@ -491,7 +497,7 @@ public class BattleScreen extends JFrame {
                 }
 
                 // Update AI panel (HP already updated)
-                updatePanel(aiPanel, aiStatsLabel, aiHealthBar, aiName, aiHP, MAX_AI_HP, aiAttack);
+                updatePanel(aiStatsLabel, aiHealthBar, aiHP, MAX_AI_HP, aiAttack);
 
                 // Delay AI's move
                 Timer delay = new Timer(1000, e -> doAIAttack());
@@ -524,7 +530,7 @@ public class BattleScreen extends JFrame {
             case "heal":
                 int healAmount = 20;
                 playerHP = Math.min(MAX_PLAYER_HP, playerHP + healAmount);
-                updatePanel(playerPanel, playerStatsLabel, playerHealthBar, playerName, playerHP, MAX_PLAYER_HP, playerAttack);
+                updatePanel(playerStatsLabel, playerHealthBar, playerHP, MAX_PLAYER_HP, playerAttack);
                 logLabel.setText("You healed for " + healAmount + " HP!");
 
                 // Skip attack animation, go straight to AI move after delay
@@ -580,7 +586,7 @@ public class BattleScreen extends JFrame {
                 }
 
                 // Update AI panel (HP already updated)
-                updatePanel(aiPanel, aiStatsLabel, aiHealthBar, aiName, aiHP, MAX_AI_HP, aiAttack);
+                updatePanel(aiStatsLabel, aiHealthBar, aiHP, MAX_AI_HP, aiAttack);
 
                 // Delay AI's move
                 Timer delay = new Timer(1000, e -> doAIAttack());
