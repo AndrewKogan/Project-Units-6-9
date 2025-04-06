@@ -1,9 +1,8 @@
 import java.util.ArrayList;
-
-public class Matthew extends Fairy{
+public class Andrew extends Ice{
     private ArrayList<Move> moveSet = new ArrayList<>();
-    public Matthew(){
-        super(550, "Matthew", 60);
+    public Andrew(){
+        super(700, "Andrew", 50);
     }
     public void createMoveSet(){
         for(int i = 0; i < 3;i++){
@@ -12,9 +11,9 @@ public class Matthew extends Fairy{
                 moveSet.add(Fighting.fightingGetMoveSet().get((int) (Math.random() * Fighting.fightingGetMoveSet().size())));
             }
             else{
-                moveSet.add(fairyGetMoveSet().get((int) (Math.random() * fairyGetMoveSet().size())));
+                moveSet.add(iceGetMoveSet().get((int) (Math.random() * iceGetMoveSet().size())));
             }
-            moveSet.add(new Move("Final Ultra Mega Sparkles Unicorn Rainbow Blast Supreme X", 90, "fairy", 100, "none", 5));
+            moveSet.add(new Move("Frozen World", 0, "ice", 80, "freeze", 5));
         }
 
     }

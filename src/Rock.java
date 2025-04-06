@@ -13,7 +13,7 @@ public class Rock extends MonsterParent{
         moveSet.add(new Move("Tectonic Smash",80, "rock", 100, "none", 5));
     }
 
-    public static ArrayList<Move> fightingGetMoveSet(){
+    public static ArrayList<Move> rockGetMoveSet(){
         return moveSet;
     }
 }
