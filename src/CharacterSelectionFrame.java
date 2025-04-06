@@ -20,56 +20,52 @@ public class CharacterSelectionFrame extends JFrame {
 
         Random rand = new Random();
         String[] types = {"Ice", "Fairy", "Fighting", "Rock"};
+        MonsterParent[][] monsterGrid = new MonsterParent[4][2];
 
-        for (int i = 1; i <= 8; i++) {
-            String name = "";
-            int defense = rand.nextInt(51) + 70; // Random defense stat
+        for (int i = 0; i < 8; i++) {
+            int row = i / 2;
+            int col = i % 2;
+
+            String name = switch (i) {
+                case 0 -> "Steven";
+                case 1 -> "Matthew";
+                case 2 -> "Kyle";
+                case 3 -> "Andy";
+                case 4 -> "Roy";
+                case 5 -> "James";
+                case 6 -> "Andrew";
+                case 7 -> "Lev";
+                default -> "Unknown";
+            };
+            Random random = new Random();
+
+
+            // Generate a random integer between min and max (inclusive)
+            int defense = random.nextInt(250 - 150 + 1) + 150;
             String type = types[rand.nextInt(types.length)];
-            int attack = rand.nextInt(21) + 15;
-            if(i == 1){
-                name = "Steven";
-            }
-            if(i == 2){
-                name = "Matthew";
-            }
-            if(i == 3){
-                name = "Kyle";
-            }
-            if(i == 4){
-                name = "Andy";
-            }
-            if(i == 5){
-                name = "Roy";
-            }
-            if(i == 6){
-                name = "James";
-            }
-            if(i == 7){
-                name = "Andrew";
-            }
-            if(i == 8){
-                name = "Lev";
-            }
+            int attack = random.nextInt(30 - 15 + 1) + 15;
 
             MonsterParent monster = new MonsterParent(defense, type, name, attack);
+            monsterGrid[row][col] = monster;
 
             String stats = "Type: " + type + "\nDefense: " + defense + "\nAttack: " + attack;
 
-            ImageIcon icon = new ImageIcon("img/img_0" + i + ".jpeg");
+            ImageIcon icon = new ImageIcon("img/img_0" + (i + 1) + ".jpeg");
             icon = rotateImageIcon(icon);
             Image scaledImage = icon.getImage().getScaledInstance(180, 180, Image.SCALE_SMOOTH);
             JButton button = new JButton(new ImageIcon(scaledImage));
 
             button.setToolTipText(name);
 
-            String finalName = name;
             button.addActionListener(e -> {
                 selectedMonster = monster;
-                statsPanel.updateStats(finalName, stats);
+                statsPanel.updateStats(name, stats);
+                System.out.println(stats);
             });
 
             leftPanel.add(button);
         }
+
 
 
         statsPanel.setChooseButtonListener(e -> {
@@ -94,7 +90,6 @@ public class CharacterSelectionFrame extends JFrame {
         int width = icon.getIconWidth();
         int height = icon.getIconHeight();
 
-        // Create a new image with flipped dimensions
         BufferedImage original = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = original.createGraphics();
         g2d.drawImage(icon.getImage(), 0, 0, null);
@@ -103,7 +98,6 @@ public class CharacterSelectionFrame extends JFrame {
         BufferedImage rotated = new BufferedImage(height, width, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = rotated.createGraphics();
 
-        // Rotate 90 degrees clockwise
         g.translate(height, 0);
         g.rotate(Math.toRadians(90));
         g.drawImage(original, 0, 0, null);

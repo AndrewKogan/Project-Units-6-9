@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public class BattleScreen extends JFrame {
@@ -60,12 +59,11 @@ public class BattleScreen extends JFrame {
         playerSpriteLabel.setHorizontalAlignment(SwingConstants.LEFT);
         aiSpriteLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
-// Scale images to sprite size (e.g. 200x200)
 
 
-        JPanel spritePanel = new JPanel(null); // null layout for positioning manually
+        JPanel spritePanel = new JPanel(null);
         spritePanel.setPreferredSize(new Dimension(600, 300));
-        spritePanel.setBackground(Color.BLACK); // Or something thematic
+        spritePanel.setBackground(Color.BLACK);
 
         playerSpriteLabel.setBounds(50, 50, 200, 200);
         aiSpriteLabel.setBounds(350, 70, 200, 200);
@@ -726,41 +724,33 @@ public class BattleScreen extends JFrame {
                         defenderType.equals("Rock") ? 1.5 :
                                 defenderType.equals("FairyFairy") ? 0.5 : 1.0;
         }
-        return 1.0; // Default to neutral if unknown
+        return 1.0;
     }
     private void showFloatingMessage(String message, JPanel targetPanel) {
-        // Create a new JLabel to display the message
         JLabel floatingMessage = new JLabel(message);
         floatingMessage.setFont(new Font("Arial", Font.BOLD, 16));
         floatingMessage.setForeground(Color.WHITE);
         floatingMessage.setOpaque(true);
-        floatingMessage.setBackground(new Color(0, 0, 0, 100)); // Semi-transparent background
+        floatingMessage.setBackground(new Color(0, 0, 0, 100));
         floatingMessage.setHorizontalAlignment(SwingConstants.CENTER);
         floatingMessage.setVerticalAlignment(SwingConstants.CENTER);
 
-        // Get the position of the target panel (where the message should float above)
         Point panelLocation = targetPanel.getLocationOnScreen();
-        int x = panelLocation.x + targetPanel.getWidth() / 2 - 50; // Adjust for centering
-        int y = panelLocation.y - 20; // Position above the panel
-
-        // Set the floating message's location on the screen
+        int x = panelLocation.x + targetPanel.getWidth() / 2 - 50;
+        int y = panelLocation.y - 20;
         floatingMessage.setBounds(x, y, 100, 30);
 
-        // Add the floating message to the JFrame
         add(floatingMessage);
         revalidate();
         repaint();
 
-        // Animate the floating message: Move it upwards and fade out
         Timer timer = new Timer(100, new ActionListener() {
             int deltaY = 1;
             int alpha = 255;
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Move the message up
                 floatingMessage.setLocation(floatingMessage.getX(), floatingMessage.getY() - deltaY);
 
-                // Fade out the message
                 if (alpha > 0) {
                     alpha -= 5;
                     floatingMessage.setForeground(new Color(255, 255, 255, alpha));
@@ -795,28 +785,6 @@ public class BattleScreen extends JFrame {
         });
 
         timer.start();
-    }
-
-    public static ImageIcon rotateImageIcon(ImageIcon icon) {
-        int width = icon.getIconWidth();
-        int height = icon.getIconHeight();
-
-        // Create a new image with flipped dimensions
-        BufferedImage original = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = original.createGraphics();
-        g2d.drawImage(icon.getImage(), 0, 0, null);
-        g2d.dispose();
-
-        BufferedImage rotated = new BufferedImage(height, width, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = rotated.createGraphics();
-
-        // Rotate 90 degrees clockwise
-        g.translate(height, 0);
-        g.rotate(Math.toRadians(90));
-        g.drawImage(original, 0, 0, null);
-        g.dispose();
-
-        return new ImageIcon(rotated);
     }
 
 }
