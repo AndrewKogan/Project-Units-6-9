@@ -19,13 +19,37 @@ public class CharacterSelectionFrame extends JFrame {
         leftPanel.setBorder(BorderFactory.createTitledBorder("Characters"));
 
         Random rand = new Random();
-        String[] types = {"Fire", "Water", "Earth", "Air"};
+        String[] types = {"Ice", "Fairy", "Fighting", "Rock"};
 
         for (int i = 1; i <= 8; i++) {
-            String name = "Character " + i;
+            String name = "";
             int defense = rand.nextInt(51) + 70; // Random defense stat
             String type = types[rand.nextInt(types.length)];
             int attack = rand.nextInt(21) + 15;
+            if(i == 1){
+                name = "Steven";
+            }
+            if(i == 2){
+                name = "Matthew";
+            }
+            if(i == 3){
+                name = "Kyle";
+            }
+            if(i == 4){
+                name = "Andy";
+            }
+            if(i == 5){
+                name = "Roy";
+            }
+            if(i == 6){
+                name = "James";
+            }
+            if(i == 7){
+                name = "Andrew";
+            }
+            if(i == 8){
+                name = "Lev";
+            }
 
             MonsterParent monster = new MonsterParent(defense, type, name, attack);
 
@@ -38,9 +62,10 @@ public class CharacterSelectionFrame extends JFrame {
 
             button.setToolTipText(name);
 
+            String finalName = name;
             button.addActionListener(e -> {
                 selectedMonster = monster;
-                statsPanel.updateStats(name, stats);
+                statsPanel.updateStats(finalName, stats);
             });
 
             leftPanel.add(button);

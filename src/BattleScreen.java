@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public class BattleScreen extends JFrame {
@@ -36,7 +37,7 @@ public class BattleScreen extends JFrame {
 
         Random rand = new Random();
         aiName = "AI Character";
-        String[] types = {"Fire", "Water", "Earth"};
+        String[] types = {"Rock", "Ice", "Fairy", "Fighting"};
         aiType = types[rand.nextInt(types.length)];
         aiHP = rand.nextInt(51) + 70;
         aiAttack = rand.nextInt(21) + 15;
@@ -53,18 +54,46 @@ public class BattleScreen extends JFrame {
         logLabel = new JLabel("Click a move to begin!", SwingConstants.CENTER);
         logLabel.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        if (playerType.equals("Water")) {
+        JLabel playerSpriteLabel = new JLabel();
+        JLabel aiSpriteLabel = new JLabel();
+
+        playerSpriteLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        aiSpriteLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+
+// Scale images to sprite size (e.g. 200x200)
+
+
+        JPanel spritePanel = new JPanel(null); // null layout for positioning manually
+        spritePanel.setPreferredSize(new Dimension(600, 300));
+        spritePanel.setBackground(Color.BLACK); // Or something thematic
+
+        playerSpriteLabel.setBounds(50, 50, 200, 200);
+        aiSpriteLabel.setBounds(350, 70, 200, 200);
+
+        spritePanel.add(playerSpriteLabel);
+        spritePanel.add(aiSpriteLabel);
+        add(spritePanel, BorderLayout.CENTER);
+        slideSprite(playerSpriteLabel, true); // For player
+        slideSprite(aiSpriteLabel, false);   // For AI
+
+
+
+        if (playerType.equals("Ice")) {
             JPanel movePanel = new JPanel(new GridLayout(2, 2));
+
+
+            add(playerSpriteLabel);
+            add(aiSpriteLabel);
 
             healButton = new JButton("Heal");
             strongAttackButton = new JButton("Strong Attack");
             normalAttackButton = new JButton("Normal Attack");
-            typeSpecialButton = new JButton("Water Surge");
+            typeSpecialButton = new JButton("Ice Surge");
 
-            healButton.addActionListener(e -> performWaterMove("heal"));
-            strongAttackButton.addActionListener(e -> performWaterMove("strong"));
-            normalAttackButton.addActionListener(e -> performWaterMove("normal"));
-            typeSpecialButton.addActionListener(e -> performWaterMove("special"));
+            healButton.addActionListener(e -> performIceMove("heal"));
+            strongAttackButton.addActionListener(e -> performIceMove("strong"));
+            normalAttackButton.addActionListener(e -> performIceMove("normal"));
+            typeSpecialButton.addActionListener(e -> performIceMove("special"));
 
             movePanel.add(healButton);
             movePanel.add(strongAttackButton);
@@ -73,18 +102,21 @@ public class BattleScreen extends JFrame {
 
             add(movePanel, BorderLayout.SOUTH);
         }
-        if (playerType.equals("Earth")) {
+        if (playerType.equals("Fairy")) {
             JPanel movePanel = new JPanel(new GridLayout(2, 2));
+
+            add(playerSpriteLabel);
+            add(aiSpriteLabel);
 
             healButton = new JButton("Heal");
             strongAttackButton = new JButton("Strong Attack");
             normalAttackButton = new JButton("Normal Attack");
-            typeSpecialButton = new JButton("Earth Surge");
+            typeSpecialButton = new JButton("Fairy Surge");
 
-            healButton.addActionListener(e -> performEarthMove("heal"));
-            strongAttackButton.addActionListener(e -> performEarthMove("strong"));
-            normalAttackButton.addActionListener(e -> performEarthMove("normal"));
-            typeSpecialButton.addActionListener(e -> performEarthMove("special"));
+            healButton.addActionListener(e -> performFairyMove("heal"));
+            strongAttackButton.addActionListener(e -> performFairyMove("strong"));
+            normalAttackButton.addActionListener(e -> performFairyMove("normal"));
+            typeSpecialButton.addActionListener(e -> performFairyMove("special"));
 
             movePanel.add(healButton);
             movePanel.add(strongAttackButton);
@@ -92,18 +124,20 @@ public class BattleScreen extends JFrame {
             movePanel.add(typeSpecialButton);
 
             add(movePanel, BorderLayout.SOUTH);
-        } if (playerType.equals("Fire")) {
+        } if (playerType.equals("Rock")) {
             JPanel movePanel = new JPanel(new GridLayout(2, 2));
+            add(playerSpriteLabel);
+            add(aiSpriteLabel);
 
             healButton = new JButton("Heal");
             strongAttackButton = new JButton("Strong Attack");
             normalAttackButton = new JButton("Normal Attack");
-            typeSpecialButton = new JButton("Fire Surge");
+            typeSpecialButton = new JButton("Rock Surge");
 
-            healButton.addActionListener(e -> performFireMove("heal"));
-            strongAttackButton.addActionListener(e -> performFireMove("strong"));
-            normalAttackButton.addActionListener(e -> performFireMove("normal"));
-            typeSpecialButton.addActionListener(e -> performFireMove("special"));
+            healButton.addActionListener(e -> performRockMove("heal"));
+            strongAttackButton.addActionListener(e -> performRockMove("strong"));
+            normalAttackButton.addActionListener(e -> performRockMove("normal"));
+            typeSpecialButton.addActionListener(e -> performRockMove("special"));
 
             movePanel.add(healButton);
             movePanel.add(strongAttackButton);
@@ -112,18 +146,21 @@ public class BattleScreen extends JFrame {
 
             add(movePanel, BorderLayout.SOUTH);
         }
-        if (playerType.equals("Air")) {
+        if (playerType.equals("Fighting")) {
             JPanel movePanel = new JPanel(new GridLayout(2, 2));
+
+            add(playerSpriteLabel);
+            add(aiSpriteLabel);
 
             healButton = new JButton("Heal");
             strongAttackButton = new JButton("Strong Attack");
             normalAttackButton = new JButton("Normal Attack");
-            typeSpecialButton = new JButton("Air Surge");
+            typeSpecialButton = new JButton("Fighting Surge");
 
-            healButton.addActionListener(e -> performAirMove("heal"));
-            strongAttackButton.addActionListener(e -> performAirMove("strong"));
-            normalAttackButton.addActionListener(e -> performAirMove("normal"));
-            typeSpecialButton.addActionListener(e -> performAirMove("special"));
+            healButton.addActionListener(e -> performFightingMove("heal"));
+            strongAttackButton.addActionListener(e -> performFightingMove("strong"));
+            normalAttackButton.addActionListener(e -> performFightingMove("normal"));
+            typeSpecialButton.addActionListener(e -> performFightingMove("special"));
 
             movePanel.add(healButton);
             movePanel.add(strongAttackButton);
@@ -164,12 +201,11 @@ public class BattleScreen extends JFrame {
 
 
 
-    private void performWaterMove(String moveType) {
+    private void performIceMove(String moveType) {
         setMoveButtonsEnabled(false);
 
         if (playerHP <= 0 || aiHP <= 0) return;
 
-        Random rand = new Random();
         int playerDamage = 0;
         String actionText = "";
 
@@ -207,9 +243,9 @@ public class BattleScreen extends JFrame {
                 break;
 
             case "special":
-                playerDamage = hasAdvantage("Water", aiType) ? playerAttack + 15 : playerAttack;
+                playerDamage = hasAdvantage("Ice", aiType) ? playerAttack + 15 : playerAttack;
                 aiHP -= playerDamage;
-                actionText = "Water Surge dealt " + playerDamage + " damage!";
+                actionText = "Ice Surge dealt " + playerDamage + " damage!";
                 break;
         }
 
@@ -219,7 +255,7 @@ public class BattleScreen extends JFrame {
         if (aiHP < 0) aiHP = 0;
 
         // Do slide-forward animation, then hit, health bar loss, and logging
-        if(!moveType.equals("heal")){
+        if(!moveType.equals("heal")) {
             int finalDamage = playerDamage;
             String finalActionText = actionText;
             slideForwardAndBack(playerPanel, true, () -> {
@@ -229,7 +265,7 @@ public class BattleScreen extends JFrame {
 
                 // Show effectiveness floating message if it's a special move
                 if (moveType.equals("special")) {
-                    double effectiveness = getEffectiveness("Water", aiType);
+                    double effectiveness = getEffectiveness("Ice", aiType);
                     if (effectiveness > 1.0) showFloatingMessage("It's super effective!", playerPanel);
                     else if (effectiveness < 1.0) showFloatingMessage("Not very effective...", playerPanel);
                 }
@@ -321,10 +357,10 @@ public class BattleScreen extends JFrame {
     }
 
     private boolean hasAdvantage(String attackerType, String defenderType) {
-        return (attackerType.equals("Water") && defenderType.equals("Fire")) ||
-                (attackerType.equals("Fire") && defenderType.equals("Earth")) ||
-                (attackerType.equals("Earth") && defenderType.equals("Air")) ||
-                (attackerType.equals("Air") && defenderType.equals("Water"));
+        return (attackerType.equals("Ice") && defenderType.equals("Rock")) ||
+                (attackerType.equals("Rock") && defenderType.equals("Fairy")) ||
+                (attackerType.equals("Fairy") && defenderType.equals("Fighting")) ||
+                (attackerType.equals("Fighting") && defenderType.equals("Ice"));
     }
 
     private void disableAllButtons() {
@@ -342,7 +378,7 @@ public class BattleScreen extends JFrame {
     }
 
 
-    private void performFireMove(String moveType) {
+    private void performRockMove(String moveType) {
         setMoveButtonsEnabled(false);
 
         if (playerHP <= 0 || aiHP <= 0) return;
@@ -384,9 +420,9 @@ public class BattleScreen extends JFrame {
                 break;
 
             case "special":
-                playerDamage = hasAdvantage("Fire", aiType) ? playerAttack + 15 : playerAttack;
+                playerDamage = hasAdvantage("Rock", aiType) ? playerAttack + 15 : playerAttack;
                 aiHP -= playerDamage;
-                actionText = "Fire Surge dealt " + playerDamage + " damage!";
+                actionText = "Rock Surge dealt " + playerDamage + " damage!";
                 break;
         }
 
@@ -404,7 +440,7 @@ public class BattleScreen extends JFrame {
 
                 // Show effectiveness floating message if it's a special move
                 if (moveType.equals("special")) {
-                    double effectiveness = getEffectiveness("Fire", aiType);
+                    double effectiveness = getEffectiveness("Rock", aiType);
                     if (effectiveness > 1.0) showFloatingMessage("It's super effective!", playerPanel);
                     else if (effectiveness < 1.0) showFloatingMessage("Not very effective...", playerPanel);
                 }
@@ -430,7 +466,7 @@ public class BattleScreen extends JFrame {
         if (fireStrongCooldown > 0) fireStrongCooldown--;
     }
 
-    private void performAirMove(String moveType) {
+    private void performFightingMove(String moveType) {
         setMoveButtonsEnabled(false);
 
         if (playerHP <= 0 || aiHP <= 0) return;
@@ -473,9 +509,9 @@ public class BattleScreen extends JFrame {
                 break;
 
             case "special":
-                playerDamage = hasAdvantage("Air", aiType) ? playerAttack + 15 : playerAttack;
+                playerDamage = hasAdvantage("Fighting", aiType) ? playerAttack + 15 : playerAttack;
                 aiHP -= playerDamage;
-                actionText = "Air Surge dealt " + playerDamage + " damage!";
+                actionText = "Fighting Surge dealt " + playerDamage + " damage!";
                 break;
         }
 
@@ -493,7 +529,7 @@ public class BattleScreen extends JFrame {
 
                 // Show effectiveness floating message if it's a special move
                 if (moveType.equals("special")) {
-                    double effectiveness = getEffectiveness("Air", aiType);
+                    double effectiveness = getEffectiveness("Fighting", aiType);
                     if (effectiveness > 1.0) showFloatingMessage("It's super effective!", playerPanel);
                     else if (effectiveness < 1.0) showFloatingMessage("Not very effective...", playerPanel);
                 }
@@ -519,7 +555,7 @@ public class BattleScreen extends JFrame {
         if (airStrongCooldown > 0) airStrongCooldown--;
     }
 
-    private void performEarthMove(String moveType) {
+    private void performFairyMove(String moveType) {
         setMoveButtonsEnabled(false);
 
         if (playerHP <= 0 || aiHP <= 0) return;
@@ -562,9 +598,9 @@ public class BattleScreen extends JFrame {
                 break;
 
             case "special":
-                playerDamage = hasAdvantage("Earth", aiType) ? playerAttack + 15 : playerAttack;
+                playerDamage = hasAdvantage("Fairy", aiType) ? playerAttack + 15 : playerAttack;
                 aiHP -= playerDamage;
-                actionText = "Earth Surge dealt " + playerDamage + " damage!";
+                actionText = "Fairy Surge dealt " + playerDamage + " damage!";
                 break;
         }
 
@@ -582,7 +618,7 @@ public class BattleScreen extends JFrame {
 
                 // Show effectiveness floating message if it's a special move
                 if (moveType.equals("special")) {
-                    double effectiveness = getEffectiveness("Earth", aiType);
+                    double effectiveness = getEffectiveness("Fairy", aiType);
                     if (effectiveness > 1.0) showFloatingMessage("It's super effective!", playerPanel);
                     else if (effectiveness < 1.0) showFloatingMessage("Not very effective...", playerPanel);
                 }
@@ -670,25 +706,25 @@ public class BattleScreen extends JFrame {
         if (attackerType.equals(defenderType)) return 1.0; // Neutral
 
         switch (attackerType) {
-            case "Water":
-                return defenderType.equals("Fire") ? 2.0 :
-                        defenderType.equals("Earth") ? 1.5 :
-                                defenderType.equals("Air") ? 0.5 : 1.0;
+            case "Ice":
+                return defenderType.equals("Rock") ? 2.0 :
+                        defenderType.equals("Fairy") ? 1.5 :
+                                defenderType.equals("Fighting") ? 0.5 : 1.0;
 
-            case "Fire":
-                return defenderType.equals("Earth") ? 2.0 :
-                        defenderType.equals("Air") ? 1.5 :
-                                defenderType.equals("Water") ? 0.5 : 1.0;
+            case "Rock":
+                return defenderType.equals("Fairy") ? 2.0 :
+                        defenderType.equals("Fighting") ? 1.5 :
+                                defenderType.equals("Ice") ? 0.5 : 1.0;
 
-            case "Earth":
-                return defenderType.equals("Air") ? 2.0 :
-                        defenderType.equals("Water") ? 1.5 :
-                                defenderType.equals("Fire") ? 0.5 : 1.0;
+            case "Fairy":
+                return defenderType.equals("Fighting") ? 2.0 :
+                        defenderType.equals("Ice") ? 1.5 :
+                                defenderType.equals("Rock") ? 0.5 : 1.0;
 
-            case "Air":
-                return defenderType.equals("Water") ? 2.0 :
-                        defenderType.equals("Fire") ? 1.5 :
-                                defenderType.equals("Earth") ? 0.5 : 1.0;
+            case "FightingFighting":
+                return defenderType.equals("Ice") ? 2.0 :
+                        defenderType.equals("Rock") ? 1.5 :
+                                defenderType.equals("FairyFairy") ? 0.5 : 1.0;
         }
         return 1.0; // Default to neutral if unknown
     }
@@ -739,4 +775,48 @@ public class BattleScreen extends JFrame {
         });
         timer.start();
     }
+
+    private void slideSprite(JLabel label, boolean isPlayer) {
+        Point original = label.getLocation();
+        int direction = isPlayer ? 1 : -1;
+        Timer timer = new Timer(15, null);
+        final int[] step = {0};
+
+        timer.addActionListener(e -> {
+            if (step[0] < 10) {
+                label.setLocation(original.x + direction * (step[0] + 2), original.y);
+            } else if (step[0] < 20) {
+                label.setLocation(original.x + direction * (20 - step[0]), original.y);
+            } else {
+                label.setLocation(original); // reset
+                timer.stop();
+            }
+            step[0]++;
+        });
+
+        timer.start();
+    }
+
+    public static ImageIcon rotateImageIcon(ImageIcon icon) {
+        int width = icon.getIconWidth();
+        int height = icon.getIconHeight();
+
+        // Create a new image with flipped dimensions
+        BufferedImage original = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = original.createGraphics();
+        g2d.drawImage(icon.getImage(), 0, 0, null);
+        g2d.dispose();
+
+        BufferedImage rotated = new BufferedImage(height, width, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = rotated.createGraphics();
+
+        // Rotate 90 degrees clockwise
+        g.translate(height, 0);
+        g.rotate(Math.toRadians(90));
+        g.drawImage(original, 0, 0, null);
+        g.dispose();
+
+        return new ImageIcon(rotated);
+    }
+
 }
