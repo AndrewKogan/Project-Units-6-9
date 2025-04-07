@@ -21,7 +21,7 @@ public class BattleScreen extends JFrame {
     private JProgressBar playerHealthBar, aiHealthBar;
     private JPanel playerPanel, aiPanel;
 
-    public BattleScreen(String playerName, String playerStats, String playerType) {
+    public BattleScreen(String playerName, String playerStats, String playerType, String aiName, String aiStats, String aiType) {
         this.playerType = playerType;
         this.playerName = playerName;
         setTitle("Battle Screen");
@@ -34,12 +34,11 @@ public class BattleScreen extends JFrame {
         playerAttack = Integer.parseInt(stats[2].split(": ")[1]);
         MAX_PLAYER_HP = playerHP;
 
-        Random rand = new Random();
-        aiName = "AI Character";
-        String[] types = {"Rock", "Ice", "Fairy", "Fighting"};
-        aiType = types[rand.nextInt(types.length)];
-        aiHP = rand.nextInt(51) + 70;
-        aiAttack = rand.nextInt(21) + 15;
+        this.aiName = aiName;
+        this.aiType = aiType;
+        String[] stats1 = aiStats.split("\n");
+        aiHP =  Integer.parseInt(stats1[1].split(": ")[1]);;
+        aiAttack = Integer.parseInt(stats1[2].split(": ")[1]);
         MAX_AI_HP = aiHP;
 
         playerPanel = createCharacterPanel(playerName, playerHP, playerAttack);
@@ -206,19 +205,26 @@ public class BattleScreen extends JFrame {
 
         int playerDamage = 0;
         String actionText = "";
+        int healAmount = 20;
 
         switch (moveType) {
             case "heal":
-                int healAmount = 20;
-                playerHP = Math.min(MAX_PLAYER_HP, playerHP + healAmount);
-                updatePanel(playerStatsLabel, playerHealthBar, playerHP, MAX_PLAYER_HP, playerAttack);
-                logLabel.setText("You healed for " + healAmount + " HP!");
+                if (playerHP >= MAX_PLAYER_HP) {
+                    logLabel.setText("You are already at full health!");
+                    disableHeal();
+                    setMoveButtonsEnabled(true); // Re-enable buttons since heal wasn't used
+                    return;
+                } else {
+                    playerHP = Math.min(MAX_PLAYER_HP, playerHP + healAmount);
+                    updatePanel(playerStatsLabel, playerHealthBar, playerHP, MAX_PLAYER_HP, playerAttack);
+                    logLabel.setText("You healed for " + healAmount + " HP!");
 
-                // Skip attack animation, go straight to AI move after delay
-                Timer delay = new Timer(1000, e -> doAIAttack());
-                delay.setRepeats(false);
-                delay.start();
-                break;
+                    // Skip attack animation, go straight to AI move after delay
+                    Timer delay = new Timer(1000, e -> doAIAttack());
+                    delay.setRepeats(false);
+                    delay.start();
+                    return;
+                }
 
             case "strong":
                 if (waterStrongCooldown > 0) {
@@ -228,65 +234,69 @@ public class BattleScreen extends JFrame {
                 }
                 playerDamage = playerAttack + 20;
                 aiHP -= playerDamage;
-                if(waterStrongCooldown == 0) {
-                    waterStrongCooldown = 3;
-                }
+                waterStrongCooldown = 3; // Set cooldown
                 actionText = "Strong Attack dealt " + playerDamage + " damage!";
+                if(aiHP <= 0){
+                    actionText = playerName + " Wins!";
+                }
                 break;
 
             case "normal":
                 playerDamage = playerAttack;
                 aiHP -= playerDamage;
                 actionText = "Normal Attack dealt " + playerDamage + " damage!";
+                if(aiHP <= 0){
+                    actionText = playerName + " Wins!";
+                }
                 break;
 
             case "special":
                 playerDamage = hasAdvantage("Ice", aiType) ? playerAttack + 15 : playerAttack;
                 aiHP -= playerDamage;
                 actionText = "Ice Surge dealt " + playerDamage + " damage!";
+                if(aiHP <= 0){
+                    actionText = playerName + " Wins!";
+                }
                 break;
         }
 
+        // Prevent negative HP
+        aiHP = Math.max(0, aiHP);
 
+        // Handle attack animation and AI response
+        int finalDamage = playerDamage;
+        String finalActionText = actionText;
 
-        // Ensure HP doesn't go negative
-        if (aiHP < 0) aiHP = 0;
+        slideForwardAndBack(playerPanel, true, () -> {
+            animateHit(aiPanel);
+            animateHealthBarLoss(aiPanel, aiHealthBar, finalDamage);
+            logLabel.setText(finalActionText);
 
-        // Do slide-forward animation, then hit, health bar loss, and logging
-        if(!moveType.equals("heal")) {
-            int finalDamage = playerDamage;
-            String finalActionText = actionText;
-            slideForwardAndBack(playerPanel, true, () -> {
-                animateHit(aiPanel);
-                animateHealthBarLoss(aiPanel, aiHealthBar, finalDamage);
-                logLabel.setText(finalActionText);
-
-                // Show effectiveness floating message if it's a special move
-                if (moveType.equals("special")) {
-                    double effectiveness = getEffectiveness("Ice", aiType);
-                    if (effectiveness > 1.0) showFloatingMessage("It's super effective!", playerPanel);
-                    else if (effectiveness < 1.0) showFloatingMessage("Not very effective...", playerPanel);
-                }
-
-                // Update AI panel (HP already updated)
-                updatePanel(aiStatsLabel, aiHealthBar, aiHP, MAX_AI_HP, aiAttack);
-
-                // Delay AI's move
-                Timer delay = new Timer(1000, e -> doAIAttack());
-                delay.setRepeats(false);
-                delay.start();
-            });
-
-            if (playerHP <= 0) {
-                logLabel.setText(aiName + " wins!");
-                disableAllButtons();
-            } else if (aiHP <= 0) {
-                logLabel.setText(playerName + " wins!");
-                disableAllButtons();
+            // Show effectiveness message
+            if (moveType.equals("special")) {
+                double effectiveness = getEffectiveness("Ice", aiType);
+                if (effectiveness > 1.0) showFloatingMessage("It's super effective!", playerPanel);
+                else if (effectiveness < 1.0) showFloatingMessage("Not very effective...", playerPanel);
             }
+
+            updatePanel(aiStatsLabel, aiHealthBar, aiHP, MAX_AI_HP, aiAttack);
+
+            Timer delay = new Timer(1000, e -> doAIAttack());
+            delay.setRepeats(false);
+            delay.start();
+        });
+
+        if (playerHP <= 0) {
+            logLabel.setText(aiName + " wins!");
+            disableAllButtons();
+        } else if (aiHP <= 0) {
+            logLabel.setText(playerName + " wins!");
+            disableAllButtons();
         }
+
         if (waterStrongCooldown > 0) waterStrongCooldown--;
     }
+
 
     private void doAIAttack() {
         if (playerHP <= 0 || aiHP <= 0) return;
@@ -302,7 +312,6 @@ public class BattleScreen extends JFrame {
         if (!playerDodged) {
             playerHP -= damage;
             if (playerHP < 0) playerHP = 0;
-            updatePanel(playerStatsLabel, playerHealthBar, playerHP, MAX_PLAYER_HP, playerAttack);
             animateHit(playerPanel);
             animateHealthBarLoss(playerPanel, playerHealthBar, damage);
         } else {
@@ -340,12 +349,7 @@ public class BattleScreen extends JFrame {
     private void updatePanel(JLabel label, JProgressBar bar, int hp, int maxHp, int atk) {
         label.setText("HP: " + hp + " | ATK: " + atk);
         bar.setMaximum(maxHp);
-        int percent = (int) ((hp / (double) maxHp) * 100);
-        if (hp <= 0) {
-            percent = 0;
-            bar.setMaximum(1);
-        }
-        bar.setValue(percent);
+        bar.setValue(hp);
 
 
         if (hp < maxHp * 0.3) bar.setForeground(Color.RED);
@@ -368,6 +372,10 @@ public class BattleScreen extends JFrame {
         typeSpecialButton.setEnabled(false);
     }
 
+    private void disableHeal(){
+        healButton.setEnabled(false);
+    }
+
     private void setMoveButtonsEnabled(boolean enabled) {
         healButton.setEnabled(enabled);
         strongAttackButton.setEnabled(enabled);
@@ -383,19 +391,26 @@ public class BattleScreen extends JFrame {
 
         int playerDamage = 0;
         String actionText = "";
+        int healAmount = 20;
 
         switch (moveType) {
             case "heal":
-                int healAmount = 20;
-                playerHP = Math.min(MAX_PLAYER_HP, playerHP + healAmount);
-                updatePanel(playerStatsLabel, playerHealthBar, playerHP, MAX_PLAYER_HP, playerAttack);
-                logLabel.setText("You healed for " + healAmount + " HP!");
+                if (playerHP >= MAX_PLAYER_HP) {
+                    logLabel.setText("You are already at full health!");
+                    disableHeal();
+                    setMoveButtonsEnabled(true); // Re-enable buttons since heal wasn't used
+                    return;
+                } else {
+                    playerHP = Math.min(MAX_PLAYER_HP, playerHP + healAmount);
+                    updatePanel(playerStatsLabel, playerHealthBar, playerHP, MAX_PLAYER_HP, playerAttack);
+                    logLabel.setText("You healed for " + healAmount + " HP!");
 
-                // Skip attack animation, go straight to AI move after delay
-                Timer delay = new Timer(1000, e -> doAIAttack());
-                delay.setRepeats(false);
-                delay.start();
-                break;
+                    // Skip attack animation, go straight to AI move after delay
+                    Timer delay = new Timer(1000, e -> doAIAttack());
+                    delay.setRepeats(false);
+                    delay.start();
+                    return;
+                }
 
             case "strong":
                 if (fireStrongCooldown > 0) {
@@ -409,18 +424,27 @@ public class BattleScreen extends JFrame {
                     fireStrongCooldown = 3;
                 }
                 actionText = "Strong Attack dealt " + playerDamage + " damage!";
+                if(aiHP <= 0){
+                    actionText = playerName + " Wins!";
+                }
                 break;
 
             case "normal":
                 playerDamage = playerAttack;
                 aiHP -= playerDamage;
                 actionText = "Normal Attack dealt " + playerDamage + " damage!";
+                if(aiHP <= 0){
+                    actionText = playerName + " Wins!";
+                }
                 break;
 
             case "special":
                 playerDamage = hasAdvantage("Rock", aiType) ? playerAttack + 15 : playerAttack;
                 aiHP -= playerDamage;
                 actionText = "Rock Surge dealt " + playerDamage + " damage!";
+                if(aiHP <= 0){
+                    actionText = playerName + " Wins!";
+                }
                 break;
         }
 
@@ -473,18 +497,25 @@ public class BattleScreen extends JFrame {
         int playerDamage = 0;
         String actionText = "";
 
+        int healAmount = 20;
         switch (moveType) {
             case "heal":
-                int healAmount = 20;
-                playerHP = Math.min(MAX_PLAYER_HP, playerHP + healAmount);
-                updatePanel(playerStatsLabel, playerHealthBar, playerHP, MAX_PLAYER_HP, playerAttack);
-                logLabel.setText("You healed for " + healAmount + " HP!");
+                if (playerHP >= MAX_PLAYER_HP) {
+                    logLabel.setText("You are already at full health!");
+                    disableHeal();
+                    setMoveButtonsEnabled(true); // Re-enable buttons since heal wasn't used
+                    return;
+                } else {
+                    playerHP = Math.min(MAX_PLAYER_HP, playerHP + healAmount);
+                    updatePanel(playerStatsLabel, playerHealthBar, playerHP, MAX_PLAYER_HP, playerAttack);
+                    logLabel.setText("You healed for " + healAmount + " HP!");
 
-                // Skip attack animation, go straight to AI move after delay
-                Timer delay = new Timer(1000, e -> doAIAttack());
-                delay.setRepeats(false);
-                delay.start();
-                break;
+                    // Skip attack animation, go straight to AI move after delay
+                    Timer delay = new Timer(1000, e -> doAIAttack());
+                    delay.setRepeats(false);
+                    delay.start();
+                    return;
+                }
 
             case "strong":
                 if (airStrongCooldown > 0) {
@@ -498,18 +529,27 @@ public class BattleScreen extends JFrame {
                     airStrongCooldown = 3;
                 }
                 actionText = "Strong Attack dealt " + playerDamage + " damage!";
+                if(aiHP <= 0){
+                    actionText = playerName + " Wins!";
+                }
                 break;
 
             case "normal":
                 playerDamage = playerAttack;
                 aiHP -= playerDamage;
                 actionText = "Normal Attack dealt " + playerDamage + " damage!";
+                if(aiHP <= 0){
+                    actionText = playerName + " Wins!";
+                }
                 break;
 
             case "special":
                 playerDamage = hasAdvantage("Fighting", aiType) ? playerAttack + 15 : playerAttack;
                 aiHP -= playerDamage;
                 actionText = "Fighting Surge dealt " + playerDamage + " damage!";
+                if(aiHP <= 0){
+                    actionText = playerName + " Wins!";
+                }
                 break;
         }
 
@@ -561,19 +601,26 @@ public class BattleScreen extends JFrame {
         Random rand = new Random();
         int playerDamage = 0;
         String actionText = "";
+        int healAmount = 20;
 
         switch (moveType) {
             case "heal":
-                int healAmount = 20;
-                playerHP = Math.min(MAX_PLAYER_HP, playerHP + healAmount);
-                updatePanel(playerStatsLabel, playerHealthBar, playerHP, MAX_PLAYER_HP, playerAttack);
-                logLabel.setText("You healed for " + healAmount + " HP!");
+                if (playerHP >= MAX_PLAYER_HP) {
+                    logLabel.setText("You are already at full health!");
+                    disableHeal();
+                    setMoveButtonsEnabled(true); // Re-enable buttons since heal wasn't used
+                    return;
+                } else {
+                    playerHP = Math.min(MAX_PLAYER_HP, playerHP + healAmount);
+                    updatePanel(playerStatsLabel, playerHealthBar, playerHP, MAX_PLAYER_HP, playerAttack);
+                    logLabel.setText("You healed for " + healAmount + " HP!");
 
-                // Skip attack animation, go straight to AI move after delay
-                Timer delay = new Timer(1000, e -> doAIAttack());
-                delay.setRepeats(false);
-                delay.start();
-                break;
+                    // Skip attack animation, go straight to AI move after delay
+                    Timer delay = new Timer(1000, e -> doAIAttack());
+                    delay.setRepeats(false);
+                    delay.start();
+                    return;
+                }
 
             case "strong":
                 if (earthStrongCooldown > 0) {
@@ -587,18 +634,27 @@ public class BattleScreen extends JFrame {
                     earthStrongCooldown = 3;
                 }
                 actionText = "Strong Attack dealt " + playerDamage + " damage!";
+                if(aiHP <= 0){
+                    actionText = playerName + " Wins!";
+                }
                 break;
 
             case "normal":
                 playerDamage = playerAttack;
                 aiHP -= playerDamage;
                 actionText = "Normal Attack dealt " + playerDamage + " damage!";
+                if(aiHP <= 0){
+                    actionText = playerName + " Wins!";
+                }
                 break;
 
             case "special":
                 playerDamage = hasAdvantage("Fairy", aiType) ? playerAttack + 15 : playerAttack;
                 aiHP -= playerDamage;
                 actionText = "Fairy Surge dealt " + playerDamage + " damage!";
+                if(aiHP <= 0){
+                    actionText = playerName + " Wins!";
+                }
                 break;
         }
 
@@ -683,21 +739,22 @@ public class BattleScreen extends JFrame {
     }
 
     private void animateHealthBarLoss(JPanel character, JProgressBar bar, int damage) {
-        int start = bar.getValue();
-        int end = Math.max(0, start - damage);
-        Timer timer = new Timer(20, null);
-        final int[] current = {start};
+            int start = bar.getValue();
+            int end = Math.max(0, start - damage);
+            Timer timer = new Timer(20, null);
+            final int[] current = {start};
 
-        timer.addActionListener(e -> {
-            if (current[0] > end) {
-                current[0]--;
-                bar.setValue(current[0]);
-            } else {
-                timer.stop();
-            }
-        });
+            timer.addActionListener(e -> {
+                if (current[0] > end) {
+                    current[0]--;
+                    bar.setValue(current[0]);
+                } else {
+                    timer.stop();
+                }
+            });
 
-        timer.start();
+            timer.start();
+
     }
 
     private double getEffectiveness(String attackerType, String defenderType) {

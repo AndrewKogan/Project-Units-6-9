@@ -6,6 +6,7 @@ import java.util.Random;
 public class CharacterSelectionFrame extends JFrame {
     private StatsPanel statsPanel;
     private MonsterParent selectedMonster;
+    private MonsterParent randMonster;
 
     public CharacterSelectionFrame() {
         setTitle("Character Selection");
@@ -40,7 +41,6 @@ public class CharacterSelectionFrame extends JFrame {
             Random random = new Random();
 
 
-            // Generate a random integer between min and max (inclusive)
             int defense = random.nextInt(250 - 150 + 1) + 150;
             String type = types[rand.nextInt(types.length)];
             int attack = random.nextInt(30 - 15 + 1) + 15;
@@ -60,11 +60,22 @@ public class CharacterSelectionFrame extends JFrame {
             button.addActionListener(e -> {
                 selectedMonster = monster;
                 statsPanel.updateStats(name, stats);
-                System.out.println(stats);
             });
 
+
             leftPanel.add(button);
+
         }
+
+        Random random = new Random();
+        randMonster = monsterGrid[random.nextInt(4)][random.nextInt(2)];
+        while (randMonster.equals(selectedMonster)) {
+            randMonster = monsterGrid[random.nextInt(4)][random.nextInt(2)];
+        }
+
+
+
+
 
 
 
@@ -72,7 +83,9 @@ public class CharacterSelectionFrame extends JFrame {
             if (selectedMonster != null) {
                 new BattleScreen(selectedMonster.getFighterName(),
                         "Type: " + selectedMonster.getType() + "\nHP: " + selectedMonster.getDefenseValue() + "\nAttack: " + selectedMonster.getAttack(),
-                        selectedMonster.getType());
+                        selectedMonster.getType(), randMonster.getFighterName(),
+                        "Type: " + randMonster.getType() + "\nHP: " + randMonster.getDefenseValue() + "\nAttack: " + randMonster.getAttack(),
+                        randMonster.getType());
                 this.setVisible(false);
             } else {
                 JOptionPane.showMessageDialog(this, "Please select a character first!", "No Character Selected", JOptionPane.WARNING_MESSAGE);
