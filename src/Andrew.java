@@ -23,6 +23,9 @@ public class Andrew extends Ice{
                 }
             }
         }
+        if(moveSet.get(0).equals(moveSet.get(2))){
+            createMoveSet();
+        }
     }
     @Override
     public ArrayList<Move> getMoveSet() {
