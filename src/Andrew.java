@@ -15,7 +15,7 @@ public class Andrew extends Ice{
                 moveSet.add(iceGetMoveSet().get((int) (Math.random() * iceGetMoveSet().size())));
             }
         }
-        moveSet.add(new Move("Frozen World", 0, "ice", 80, "freeze", 5));
+        moveSet.add(new Move("Frozen World", 0, "ice", 80, "attack+", 5));
         for (int i = 0; i < 2; i++){
             for(int j = i + 1; j < 3; j++){
                 if(moveSet.get(i).equals(moveSet.get(j))){

@@ -382,21 +382,21 @@ public class BattleScreen extends JFrame {
     }
 
     private void animateHealthBarLoss(JPanel character, JProgressBar bar, int damage) {
-            int start = bar.getValue();
-            int end = Math.max(0, start - damage);
-            Timer timer = new Timer(20, null);
-            final int[] current = {start};
+        if(bar==null) return;
+        int start = bar.getValue();
+        int end = Math.max(0, start - damage);
+        Timer timer = new Timer(20, null);
+        final int[] current = {start};
 
-            timer.addActionListener(e -> {
-                if (current[0] > end) {
-                    current[0]--;
-                    bar.setValue(current[0]);
-                } else {
-                    timer.stop();
-                }
-            });
-
-            timer.start();
+        timer.addActionListener(e -> {
+            if (current[0] > end) {
+                current[0]--;
+                bar.setValue(current[0]);
+            } else {
+                timer.stop();
+            }
+        });
+        timer.start();
 
     }
 
