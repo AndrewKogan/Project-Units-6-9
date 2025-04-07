@@ -5,7 +5,7 @@ public class Rock extends MonsterParent{
 
     public Rock(int defenseValue, String name, int speedValue){
         super(defenseValue, "Rock", name, speedValue);
-        moveSet.add(new Move("Crystalize",0, "rock", 100, "defense+", 15));
+        moveSet.add(new Move("Crystalize",0, "rock", 100, "hp+", 15));
         moveSet.add(new Move("Rock Barrage",60, "rock", 100, "none", 15));
         moveSet.add(new Move("Rock Mastery",20, "rock", 100, "attack+", 10));
         moveSet.add(new Move("Rock Catapult",50, "rock", 100, "none", 10));

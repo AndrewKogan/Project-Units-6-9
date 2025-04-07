@@ -1,21 +1,23 @@
-import java.util.ArrayList;
-public class Andrew extends Ice{
+import java.util.*;
+public class Matthew extends Fairy {
     private ArrayList<Move> moveSet;
-    public Andrew(){
-        super(700, "Andrew", 50);
+
+    public Matthew() {
+        super(550, "Matthew", 60);
     }
+
     @Override
-    public void createMoveSet(){
+    public void createMoveSet() {
         moveSet = new ArrayList<>();
-        for(int i = 0; i < 3;i++) {
+        for (int i = 0; i < 3; i++) {
             double random = Math.random();
             if (random <= .33) {
                 moveSet.add(Fighting.fightingGetMoveSet().get((int) (Math.random() * Fighting.fightingGetMoveSet().size())));
             } else {
-                moveSet.add(iceGetMoveSet().get((int) (Math.random() * iceGetMoveSet().size())));
+                moveSet.add(fairyGetMoveSet().get((int) (Math.random() * fairyGetMoveSet().size())));
             }
         }
-        moveSet.add(new Move("Frozen World", 0, "ice", 80, "freeze", 5));
+        moveSet.add(new Move("Final Ultra Mega Sparkles Unicorn Rainbow Blast Supreme X", 90, "fairy", 100, "none", 5));
         for (int i = 0; i < 2; i++){
             for(int j = i + 1; j < 3; j++){
                 if(moveSet.get(i).equals(moveSet.get(j))){
@@ -24,6 +26,7 @@ public class Andrew extends Ice{
             }
         }
     }
+
     @Override
     public ArrayList<Move> getMoveSet() {
         return moveSet;

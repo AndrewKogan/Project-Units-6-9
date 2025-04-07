@@ -19,47 +19,41 @@ public class CharacterSelectionFrame extends JFrame {
         JPanel leftPanel = new JPanel(new GridLayout(4, 2, 5, 5));
         leftPanel.setBorder(BorderFactory.createTitledBorder("Characters"));
 
-        Random rand = new Random();
-        String[] types = {"Ice", "Fairy", "Fighting", "Rock"};
         MonsterParent[][] monsterGrid = new MonsterParent[4][2];
 
         for (int i = 0; i < 8; i++) {
             int row = i / 2;
             int col = i % 2;
 
-            String name = switch (i) {
-                case 0 -> "Steven";
-                case 1 -> "Matthew";
-                case 2 -> "Kyle";
-                case 3 -> "Andy";
-                case 4 -> "Roy";
-                case 5 -> "James";
-                case 6 -> "Andrew";
-                case 7 -> "Lev";
-                default -> "Unknown";
+            MonsterParent monster = switch (i) {
+                case 0 -> new Steven();
+                case 1 -> new Matthew();
+                case 2 -> new Kyle();
+                case 3 -> new Andy();
+                case 4 -> new Benjamin();
+                case 5 -> new James();
+                case 6 -> new Andrew();
+                case 7 -> new Lev();
+                default -> new MonsterParent(0,"none","Unknown",0);
             };
-            Random random = new Random();
 
 
-            int defense = random.nextInt(250 - 150 + 1) + 150;
-            String type = types[rand.nextInt(types.length)];
-            int attack = random.nextInt(30 - 15 + 1) + 15;
 
-            MonsterParent monster = new MonsterParent(defense, type, name, attack);
             monsterGrid[row][col] = monster;
 
-            String stats = "Type: " + type + "\nDefense: " + defense + "\nAttack: " + attack;
+
+            String stats = "Type: " + monster.getType() + "\nDefense: " + monster.getDefenseValue() + "\nSpeed: " + monster.getSpeed();
 
             ImageIcon icon = new ImageIcon("img/img_0" + (i + 1) + ".jpeg");
             icon = rotateImageIcon(icon);
             Image scaledImage = icon.getImage().getScaledInstance(180, 180, Image.SCALE_SMOOTH);
             JButton button = new JButton(new ImageIcon(scaledImage));
 
-            button.setToolTipText(name);
+            button.setToolTipText(monster.getFighterName());
 
             button.addActionListener(e -> {
                 selectedMonster = monster;
-                statsPanel.updateStats(name, stats);
+                statsPanel.updateStats(monster.getFighterName(), stats);
             });
 
 
@@ -82,10 +76,10 @@ public class CharacterSelectionFrame extends JFrame {
         statsPanel.setChooseButtonListener(e -> {
             if (selectedMonster != null) {
                 new BattleScreen(selectedMonster.getFighterName(),
-                        "Type: " + selectedMonster.getType() + "\nHP: " + selectedMonster.getDefenseValue() + "\nAttack: " + selectedMonster.getAttack(),
-                        selectedMonster.getType(), randMonster.getFighterName(),
-                        "Type: " + randMonster.getType() + "\nHP: " + randMonster.getDefenseValue() + "\nAttack: " + randMonster.getAttack(),
-                        randMonster.getType());
+                        "Type: " + selectedMonster.getType() + "\nHP: " + selectedMonster.getDefenseValue() + "\nSpeed: " + selectedMonster.getSpeed(),
+                        selectedMonster.getType(), selectedMonster,randMonster.getFighterName(),
+                        "Type: " + randMonster.getType() + "\nHP: " + randMonster.getDefenseValue() + "\nSpeed: " + randMonster.getSpeed(),
+                        randMonster.getType(), randMonster);
                 this.setVisible(false);
             } else {
                 JOptionPane.showMessageDialog(this, "Please select a character first!", "No Character Selected", JOptionPane.WARNING_MESSAGE);

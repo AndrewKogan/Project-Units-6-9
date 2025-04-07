@@ -3,17 +3,19 @@ public class MonsterParent {
     private int defenseValue;
     private String type;
     private String fighterName;
-    private int atk;
+    private int speed;
     private ArrayList<Move> moveSet = new ArrayList<>();
-    public MonsterParent(int defenseValue, String type, String name, int atk){
+    public MonsterParent(int defenseValue, String type, String name, int speed){
         this.defenseValue = defenseValue;
         this.type = type;
         this.fighterName = name;
-        this.atk = atk;
+        this.speed = speed;
     }
 
-    public int getAttack() {
-        return atk;
+    public void createMoveSet(){}
+
+    public int getSpeed() {
+        return speed;
     }
 
     public int getDefenseValue() {
