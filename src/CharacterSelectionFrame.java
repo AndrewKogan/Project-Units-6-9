@@ -63,8 +63,10 @@ public class CharacterSelectionFrame extends JFrame {
 
         Random random = new Random();
         randMonster = monsterGrid[random.nextInt(4)][random.nextInt(2)];
-        while (randMonster.equals(selectedMonster)) {
-            randMonster = monsterGrid[random.nextInt(4)][random.nextInt(2)];
+        if(selectedMonster!=null) {
+            while (randMonster.getFighterName().equals(selectedMonster.getFighterName())) {
+                randMonster = monsterGrid[random.nextInt(4)][random.nextInt(2)];
+            }
         }
 
 

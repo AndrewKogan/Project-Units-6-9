@@ -4,8 +4,8 @@ public class Fairy extends MonsterParent{
 
     public Fairy(int defenseValue, String name, int speedValue){
         super(defenseValue, "Fairy", name, speedValue);
-        moveSet.add(new Move("Lullaby",0, "fairy", 60, "sleep", 3));
-        moveSet.add(new Move("Poisoned Scales",0, "fairy", 60, "poison", 5));
+        moveSet.add(new Move("Lullaby",0, "fairy", 60, "hp+", 3));
+        moveSet.add(new Move("Poisoned Scales",0, "fairy", 60, "attack+", 5));
         moveSet.add(new Move("Wing Smash",40, "fairy", 100, "none", 15));
         moveSet.add(new Move("Moonblast",60, "fairy", 100, "none", 15));
         moveSet.add(new Move("Blessing",0, "fairy", 100, "hp+", 3));
