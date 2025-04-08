@@ -55,7 +55,7 @@ public class SimpleAudioPlayer
 
     public void resetAudioStream1() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         audioInputStream = AudioSystem.getAudioInputStream(
-                new File("img\\1-15. Battle (Vs. Trainer).wav").getAbsoluteFile());
+                new File("img\\1-09 - Battle! (Wild Pokémon).wav").getAbsoluteFile());
         clip.open(audioInputStream);
     }
 
