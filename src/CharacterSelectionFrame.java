@@ -44,8 +44,7 @@ public class CharacterSelectionFrame extends JFrame {
 
             String stats = "Type: " + monster.getType() + "\nDefense: " + monster.getDefenseValue() + "\nSpeed: " + monster.getSpeed();
 
-            ImageIcon icon = new ImageIcon("img/img_0" + (i + 1) + ".jpeg");
-            icon = rotateImageIcon(icon);
+            ImageIcon icon = new ImageIcon("img\\" + monster.getFighterName() + ".png");
             Image scaledImage = icon.getImage().getScaledInstance(180, 180, Image.SCALE_SMOOTH);
             JButton button = new JButton(new ImageIcon(scaledImage));
 
@@ -63,20 +62,13 @@ public class CharacterSelectionFrame extends JFrame {
 
         Random random = new Random();
         randMonster = monsterGrid[random.nextInt(4)][random.nextInt(2)];
-        if(selectedMonster!=null) {
-            while (randMonster.getFighterName().equals(selectedMonster.getFighterName())) {
-                randMonster = monsterGrid[random.nextInt(4)][random.nextInt(2)];
-            }
-        }
-
-
-
-
-
 
 
         statsPanel.setChooseButtonListener(e -> {
             if (selectedMonster != null) {
+                while (randMonster.getFighterName().equals(selectedMonster.getFighterName())) {
+                    randMonster = monsterGrid[random.nextInt(4)][random.nextInt(2)];
+                }
                 new BattleScreen(selectedMonster.getFighterName(),
                         "Type: " + selectedMonster.getType() + "\nHP: " + selectedMonster.getDefenseValue() + "\nSpeed: " + selectedMonster.getSpeed(),
                         selectedMonster.getType(), selectedMonster,randMonster.getFighterName(),

@@ -1,9 +1,11 @@
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class BattleScreen extends JFrame {
     private int playerHP, aiHP;
@@ -11,9 +13,6 @@ public class BattleScreen extends JFrame {
     private final int MAX_PLAYER_HP, MAX_AI_HP;
     private String playerType, aiType;
     private int waterStrongCooldown = 0;
-    private int fireStrongCooldown = 0;
-    private int earthStrongCooldown = 0;
-    private int airStrongCooldown = 0;
     private ArrayList<Move> playerMoveSet;
     private ArrayList<Move> aiMoveSet;
     private int attackBonus;
@@ -41,6 +40,20 @@ public class BattleScreen extends JFrame {
         playerHP = Integer.parseInt(stats[1].split(": ")[1]);
         playerAttack = Integer.parseInt(stats[2].split(": ")[1]);
         MAX_PLAYER_HP = playerHP;
+        ImageIcon imageIcon = new ImageIcon("img\\" + playerName + ".png");
+        Image image = imageIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        ImageIcon scaledIcon = new ImageIcon(image);
+        JLabel imageLabel = new JLabel(scaledIcon);
+        imageLabel.setBounds(500, 50, 200, 200);
+        add(imageLabel);
+        setVisible(true);
+        ImageIcon imageIcon1 = new ImageIcon("img\\" + aiName + ".png");
+        Image image1 = imageIcon1.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        ImageIcon scaledIcon1 = new ImageIcon(image1);
+        JLabel imageLabel1 = new JLabel(scaledIcon1);
+        imageLabel1.setBounds(50, 50, 200, 200);
+        add(imageLabel1);
+        setVisible(true);
 
         this.aiName = aiName;
         this.aiType = aiType;
@@ -190,6 +203,11 @@ public class BattleScreen extends JFrame {
         int playerDamage = playerMoveSet.get(buttonPressed).getAttackValue() + attackBonus;
         String actionText = "";
         if(!aiDodged) {
+            try {
+                playSound(playerName);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
             switch (moveType) {
                 case "hp+":
                     if (playerHP >= MAX_PLAYER_HP) {
@@ -203,7 +221,7 @@ public class BattleScreen extends JFrame {
                         logLabel.setText("You healed for " + healAmount + " HP!");
                         healAmount -= 10;
                         // Skip attack animation, go straight to AI move after delay
-                        Timer delay = new Timer(1000, e -> doAIAttack());
+                        Timer delay = new Timer(3000, e -> doAIAttack());
                         delay.setRepeats(false);
                         delay.start();
                         return;
@@ -246,7 +264,7 @@ public class BattleScreen extends JFrame {
 
                 updatePanel(aiStatsLabel, aiHealthBar, aiHP, MAX_AI_HP, aiAttack);
 
-                Timer delay = new Timer(1000, e -> doAIAttack());
+                Timer delay = new Timer(3000, e -> doAIAttack());
                 delay.setRepeats(false);
                 delay.start();
             });
@@ -314,7 +332,7 @@ public class BattleScreen extends JFrame {
     }
 
     private void updatePanel(JLabel label, JProgressBar bar, int hp, int maxHp, int atk) {
-        label.setText("HP: " + hp + " | ATK: " + atk);
+        label.setText("HP: " + hp + " | Base ATK: " + atk);
         bar.setMaximum(maxHp);
         bar.setValue(hp);
 
@@ -352,7 +370,7 @@ public class BattleScreen extends JFrame {
 
     private void shakePanel(JPanel panel) {
         Point originalLocation = panel.getLocation();
-        Timer timer = new Timer(10, null);
+        Timer timer = new Timer(5, null);
         final int[] count = {0};
 
         timer.addActionListener(e -> {
@@ -395,12 +413,12 @@ public class BattleScreen extends JFrame {
         if(bar==null) return;
         int start = bar.getValue();
         int end = Math.max(0, start - damage);
-        Timer timer = new Timer(20, null);
+        Timer timer = new Timer(0, null);
         final int[] current = {start};
 
         timer.addActionListener(e -> {
             if (current[0] > end) {
-                current[0]--;
+                current[0]-=2;
                 bar.setValue(current[0]);
             } else {
                 timer.stop();
@@ -495,6 +513,13 @@ public class BattleScreen extends JFrame {
         });
 
         timer.start();
+    }
+
+    protected static void playSound(String name) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
+        SimpleAudioPlayer audioPlayer =
+                new SimpleAudioPlayer("img\\" + name + "_sound.wav", name);
+
+        audioPlayer.playOnce();
     }
 
 }

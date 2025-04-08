@@ -1,32 +1,24 @@
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Lev extends Rock{
     private ArrayList<Move> moveSet;
+    private ArrayList<Move> duo;
     public Lev(){
         super(750, "Lev", 40);
     }
     @Override
     public void createMoveSet(){
         moveSet = new ArrayList<>();
-        for(int i = 0; i < 3;i++) {
-            double random = Math.random();
-            if (random <= .33) {
-                moveSet.add(Fairy.fairyGetMoveSet().get((int) (Math.random() * Fairy.fairyGetMoveSet().size())));
-            } else {
-                moveSet.add(rockGetMoveSet().get((int) (Math.random() * rockGetMoveSet().size())));
-            }
+        duo = rockGetMoveSet();
+        for(int i = 0; i < duo.size()/2 + 3; i++){
+            duo.remove(i);
+        }
+        Collections.shuffle(duo);
+        for(int i = 0; i < 3 && i < duo.size(); i++){
+            moveSet.add(duo.get(i));
         }
         moveSet.add(new Move("Rock Fling", 60, "rock", 100, "speed+", 10));
-        for (int i = 0; i < 2; i++){
-            for(int j = i + 1; j < 3; j++){
-                if(moveSet.get(i).equals(moveSet.get(j))){
-                    createMoveSet();
-                }
-            }
-        }
-        if(moveSet.get(0).equals(moveSet.get(2))){
-            createMoveSet();
-        }
     }
     @Override
     public ArrayList<Move> getMoveSet() {

@@ -1,31 +1,25 @@
 import java.util.ArrayList;
+import java.util.Collections;
+
 public class Steven extends Fighting{
     private ArrayList<Move> moveSet;
     public Steven(){
         super(650, "Steven", 50);
     }
+    private ArrayList<Move> duo;
     @Override
     public void createMoveSet(){
         moveSet = new ArrayList<>();
-        for(int i = 0; i < 3;i++) {
-            double random = Math.random();
-            if (random <= .33) {
-                moveSet.add(Fairy.fairyGetMoveSet().get((int) (Math.random() * Fairy.fairyGetMoveSet().size())));
-            } else {
-                moveSet.add(fightingGetMoveSet().get((int) (Math.random() * fightingGetMoveSet().size())));
-            }
+        duo = fightingGetMoveSet();
+        for(int i = 0; i < duo.size()/2 + 3; i++){
+            duo.remove(i);
+        }
+        Collections.shuffle(duo);
+        for(int i = 0; i < 3 && i < duo.size(); i++){
+            moveSet.add(duo.get(i));
         }
         moveSet.add(new Move("Double Kick", 70, "fighting", 100, "none", 10));
-        for (int i = 0; i < 2; i++){
-            for(int j = i + 1; j < 3; j++){
-                if(moveSet.get(i).equals(moveSet.get(j))){
-                    createMoveSet();
-                }
-            }
-        }
-        if(moveSet.get(0).equals(moveSet.get(2))){
-            createMoveSet();
-        }
+
     }
     @Override
     public ArrayList<Move> getMoveSet() {
