@@ -3,22 +3,27 @@ import java.util.Collections;
 
 public class Kyle extends Ice{
     private ArrayList<Move> moveSet;
-    private ArrayList<Move> duo;
     public Kyle(){
         super(800, "Kyle", 50);
     }
     @Override
     public void createMoveSet(){
+        ArrayList<Move> iceMoveSet  = iceGetMoveSet();
+        ArrayList<Move> rockMoveSet  = Rock.rockGetMoveSet();
         moveSet = new ArrayList<>();
-        duo = iceGetMoveSet();
-        for(int i = 0; i < duo.size()/2 + 3; i++){
-            duo.remove(i);
+        for(int i = 0; i < 3;i++) {
+            double random = Math.random();
+            if (random <= .33) {
+                int randomIndex = (int) (Math.random() * rockMoveSet.size());
+                moveSet.add(rockMoveSet.get(randomIndex));
+                rockMoveSet.remove(randomIndex);
+            } else {
+                int randomIndex = (int) (Math.random() * iceMoveSet.size());
+                moveSet.add(iceMoveSet.get(randomIndex));
+                iceMoveSet.remove(randomIndex);
+            }
         }
-        Collections.shuffle(duo);
-        for(int i = 0; i < 3 && i < duo.size(); i++){
-            moveSet.add(duo.get(i));
-        }
-        moveSet.add(new Move("Snow Storm", 100, "ice", 30, "freeze", 5));
+        moveSet.add(new Move("Snow Storm", 100, "ice", 100, "none", 5));
     }
     @Override
     public ArrayList<Move> getMoveSet() {

@@ -3,21 +3,26 @@ import java.util.Collections;
 
 public class Benjamin extends Fairy{
     private ArrayList<Move> moveSet;
-    private ArrayList<Move> duo;
     public Benjamin(){
         super(600, "Benjamin", 70);
     }
 
     @Override
     public void createMoveSet(){
+        ArrayList<Move> fairyMoveSet  = fairyGetMoveSet();
+        ArrayList<Move> iceMoveSet  = Ice.iceGetMoveSet();
         moveSet = new ArrayList<>();
-        duo = fairyGetMoveSet();
-        for(int i = 0; i < duo.size()/2 + 2; i++){
-            duo.remove(i);
-        }
-        Collections.shuffle(duo);
-        for(int i = 0; i < 3 && i < duo.size(); i++){
-            moveSet.add(duo.get(i));
+        for(int i = 0; i < 3;i++) {
+            double random = Math.random();
+            if (random <= .33) {
+                int randomIndex = (int) (Math.random() * iceMoveSet.size());
+                moveSet.add(iceMoveSet.get(randomIndex));
+                iceMoveSet.remove(randomIndex);
+            } else {
+                int randomIndex = (int) (Math.random() * fairyMoveSet.size());
+                moveSet.add(fairyMoveSet.get(randomIndex));
+                fairyMoveSet.remove(randomIndex);
+            }
         }
         moveSet.add(new Move("Atmospheric Glide", 70, "fairy", 100, "none", 10));
     }
