@@ -46,13 +46,13 @@ public class BattleScreen extends JFrame {
         Image image = imageIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         ImageIcon scaledIcon = new ImageIcon(image);
         JLabel imageLabel = new JLabel(scaledIcon);
-        imageLabel.setBounds(500, 50, 200, 200);
+        imageLabel.setBounds(50, 50, 200, 200);
         add(imageLabel);
         ImageIcon imageIcon1 = new ImageIcon("img\\" + aiName + ".png");
         Image image1 = imageIcon1.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         ImageIcon scaledIcon1 = new ImageIcon(image1);
         JLabel imageLabel1 = new JLabel(scaledIcon1);
-        imageLabel1.setBounds(50, 50, 200, 200);
+        imageLabel1.setBounds(500, 50, 200, 200);
         add(imageLabel1);
         setVisible(true);
         setLayout(smth);
