@@ -37,9 +37,25 @@ public class SimpleAudioPlayer
         status = "play";
     }
 
+    public void playOnce1() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+        if (clip.isRunning()) {
+            clip.stop();
+        }
+        clip.close();
+        resetAudioStream1();
+        clip.start(); // play sound
+        status = "play";
+    }
+
     public void resetAudioStream() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         audioInputStream = AudioSystem.getAudioInputStream(
                 new File("img\\" + name + "_sound.wav").getAbsoluteFile());
+        clip.open(audioInputStream);
+    }
+
+    public void resetAudioStream1() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+        audioInputStream = AudioSystem.getAudioInputStream(
+                new File("img\\1-15. Battle (Vs. Trainer).wav").getAbsoluteFile());
         clip.open(audioInputStream);
     }
 

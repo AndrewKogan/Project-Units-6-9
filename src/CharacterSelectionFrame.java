@@ -1,6 +1,9 @@
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Random;
 
 public class CharacterSelectionFrame extends JFrame {
@@ -69,6 +72,11 @@ public class CharacterSelectionFrame extends JFrame {
                 while (randMonster.getFighterName().equals(selectedMonster.getFighterName())) {
                     randMonster = monsterGrid[random.nextInt(4)][random.nextInt(2)];
                 }
+                try {
+                    playSound();
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
                 new BattleScreen(selectedMonster.getFighterName(),
                         "Type: " + selectedMonster.getType() + "\nHP: " + selectedMonster.getDefenseValue() + "\nSpeed: " + selectedMonster.getSpeed(),
                         selectedMonster.getType(), selectedMonster,randMonster.getFighterName(),
@@ -87,24 +95,12 @@ public class CharacterSelectionFrame extends JFrame {
         setVisible(true);
     }
 
-    public static ImageIcon rotateImageIcon(ImageIcon icon) {
-        int width = icon.getIconWidth();
-        int height = icon.getIconHeight();
+    protected static void playSound() throws UnsupportedAudioFileException, LineUnavailableException, IOException {
+        WavVolumeAdjuster.adjustVolume("img\\1-15. Battle (Vs. Trainer).wav", "img\\1-15. Battle (Vs. Trainer).wav", 0.2f);
+        SimpleAudioPlayer audioPlayer =
+                new SimpleAudioPlayer("img\\1-15. Battle (Vs. Trainer).wav", "hi");
 
-        BufferedImage original = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = original.createGraphics();
-        g2d.drawImage(icon.getImage(), 0, 0, null);
-        g2d.dispose();
-
-        BufferedImage rotated = new BufferedImage(height, width, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = rotated.createGraphics();
-
-        g.translate(height, 0);
-        g.rotate(Math.toRadians(90));
-        g.drawImage(original, 0, 0, null);
-        g.dispose();
-
-        return new ImageIcon(rotated);
+        audioPlayer.playOnce1();
     }
 
 }
