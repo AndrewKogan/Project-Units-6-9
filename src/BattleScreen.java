@@ -31,7 +31,8 @@ public class BattleScreen extends JFrame {
         setTitle("Battle Screen");
         setSize(700, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        BorderLayout smth = new BorderLayout();
+        setLayout(smth);
         attackBonus = 0;
         healAmount = 70;
         aiFighter.createMoveSet();
@@ -40,13 +41,13 @@ public class BattleScreen extends JFrame {
         playerHP = Integer.parseInt(stats[1].split(": ")[1]);
         playerAttack = Integer.parseInt(stats[2].split(": ")[1]);
         MAX_PLAYER_HP = playerHP;
+        setLayout(null);
         ImageIcon imageIcon = new ImageIcon("img\\" + playerName + ".png");
         Image image = imageIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         ImageIcon scaledIcon = new ImageIcon(image);
         JLabel imageLabel = new JLabel(scaledIcon);
         imageLabel.setBounds(500, 50, 200, 200);
         add(imageLabel);
-        setVisible(true);
         ImageIcon imageIcon1 = new ImageIcon("img\\" + aiName + ".png");
         Image image1 = imageIcon1.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         ImageIcon scaledIcon1 = new ImageIcon(image1);
@@ -54,6 +55,7 @@ public class BattleScreen extends JFrame {
         imageLabel1.setBounds(50, 50, 200, 200);
         add(imageLabel1);
         setVisible(true);
+        setLayout(smth);
 
         this.aiName = aiName;
         this.aiType = aiType;
