@@ -15,12 +15,10 @@ public class Andy extends Rock{
             double random = Math.random();
             if (random <= .33) {
                 int randomIndex = (int) (Math.random() * iceMoveSet.size());
-                moveSet.add(iceMoveSet.get(randomIndex));
-                iceMoveSet.remove(randomIndex);
+                moveSet.add(iceMoveSet.remove(randomIndex));
             } else {
                 int randomIndex = (int) (Math.random() * rockMoveSet.size());
-                moveSet.add(rockMoveSet.get(randomIndex));
-                rockMoveSet.remove(randomIndex);
+                moveSet.add(rockMoveSet.remove(randomIndex));
             }
         }
         moveSet.add(new Move("Cosmic Shockwave", 100, "rock", 80, "none", 5));

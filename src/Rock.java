@@ -1,10 +1,11 @@
 
 import java.util.*;
 public class Rock extends MonsterParent{
-    private static ArrayList<Move> moveSet = new ArrayList<>();
+    private static ArrayList<Move> moveSet;
 
     public Rock(int defenseValue, String name, int speedValue){
         super(defenseValue, "Rock", name, speedValue);
+        moveSet = new ArrayList<>();
         moveSet.add(new Move("Crystalize",0, "rock", 100, "hp+", 15));
         moveSet.add(new Move("Rock Barrage",60, "rock", 100, "none", 15));
         moveSet.add(new Move("Rock Mastery",20, "rock", 100, "attack+", 10));

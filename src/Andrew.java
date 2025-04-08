@@ -13,12 +13,10 @@ public class Andrew extends Ice{
             double random = Math.random();
             if (random <= .33) {
                 int randomIndex = (int) (Math.random() * Fighting.fightingGetMoveSet().size());
-                moveSet.add(fightingMoveSet.get(randomIndex));
-                fightingMoveSet.remove(randomIndex);
+                moveSet.add(fightingMoveSet.remove(randomIndex));
             } else {
                 int randomIndex = (int) (Math.random() * iceGetMoveSet().size());
-                moveSet.add(iceMoveSet.get(randomIndex));
-                iceMoveSet.remove(randomIndex);
+                moveSet.add(iceMoveSet.remove(randomIndex));
             }
         }
         moveSet.add(new Move("Frozen World", 0, "ice", 80, "attack+", 5));

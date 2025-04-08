@@ -16,12 +16,10 @@ public class Steven extends Fighting{
             double random = Math.random();
             if (random <= .33) {
                 int randomIndex = (int) (Math.random() * fairyMoveSet.size());
-                moveSet.add(fairyMoveSet.get(randomIndex));
-                fairyMoveSet.remove(randomIndex);
+                moveSet.add(fairyMoveSet.remove(randomIndex));
             } else {
                 int randomIndex = (int) (Math.random() * fightingMoveSet.size());
-                moveSet.add(fightingMoveSet.get(randomIndex));
-                fightingMoveSet.remove(randomIndex);
+                moveSet.add(fightingMoveSet.remove(randomIndex));
             }
         }
         moveSet.add(new Move("Double Kick", 70, "fighting", 100, "none", 10));

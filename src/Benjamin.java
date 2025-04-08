@@ -16,12 +16,10 @@ public class Benjamin extends Fairy{
             double random = Math.random();
             if (random <= .33) {
                 int randomIndex = (int) (Math.random() * iceMoveSet.size());
-                moveSet.add(iceMoveSet.get(randomIndex));
-                iceMoveSet.remove(randomIndex);
+                moveSet.add(iceMoveSet.remove(randomIndex));
             } else {
                 int randomIndex = (int) (Math.random() * fairyMoveSet.size());
-                moveSet.add(fairyMoveSet.get(randomIndex));
-                fairyMoveSet.remove(randomIndex);
+                moveSet.add(fairyMoveSet.remove(randomIndex));
             }
         }
         moveSet.add(new Move("Atmospheric Glide", 70, "fairy", 100, "none", 10));

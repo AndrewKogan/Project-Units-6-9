@@ -1,9 +1,10 @@
 import java.util.*;
 public class Ice extends MonsterParent{
-    private static ArrayList<Move> moveSet = new ArrayList<>();
+    private static ArrayList<Move> moveSet;
 
     public Ice(int defenseValue, String name, int speedValue){
         super(defenseValue, "Ice", name, speedValue);
+        moveSet = new ArrayList<>();
         moveSet.add(new Move("Cool Down",0, "ice", 100, "attack+", 10));
         moveSet.add(new Move("Icicle Blast",60, "ice", 100, "none", 15));
         moveSet.add(new Move("Snowball Fight",50, "ice", 100, "none", 15));

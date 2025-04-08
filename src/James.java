@@ -15,12 +15,10 @@ public class James extends Fighting{
             double random = Math.random();
             if (random <= .33) {
                 int randomIndex = (int) (Math.random() * rockMoveSet.size());
-                moveSet.add(rockMoveSet.get(randomIndex));
-                rockMoveSet.remove(randomIndex);
+                moveSet.add(rockMoveSet.remove(randomIndex));
             } else {
                 int randomIndex = (int) (Math.random() * fightingMoveSet.size());
-                moveSet.add(fightingMoveSet.get(randomIndex));
-                fightingMoveSet.remove(randomIndex);
+                moveSet.add(fightingMoveSet.remove(randomIndex));
             }
         }
         moveSet.add(new Move("Ora Ora", 100, "fighting", 100, "none", 5));

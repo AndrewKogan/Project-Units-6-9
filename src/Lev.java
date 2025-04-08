@@ -19,8 +19,7 @@ public class Lev extends Rock{
                 fairyMoveSet.remove(randomIndex);
             } else {
                 int randomIndex = (int) (Math.random() * rockMoveSet.size());
-                moveSet.add(rockMoveSet.get(randomIndex));
-                rockMoveSet.remove(randomIndex);
+                moveSet.add(rockMoveSet.remove(randomIndex));
             }
         }
         moveSet.add(new Move("Rock Fling", 60, "rock", 100, "speed+", 10));

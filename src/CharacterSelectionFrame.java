@@ -96,7 +96,9 @@ public class CharacterSelectionFrame extends JFrame {
     }
 
     protected static void playSound() throws UnsupportedAudioFileException, LineUnavailableException, IOException {
-        WavVolumeAdjuster.adjustVolume("img\\1-17 - Battle! (Trainer Battle).wav", "img\\1-17 - Battle! (Trainer Battle).wav", 0.2f);
+        String input = "img\\1-17 - Battle! (Trainer Battle).wav";
+        String output = "img/temp_battle.wav";
+        WavVolumeAdjuster.adjustVolume(input, output, 0.2f);
         SimpleAudioPlayer audioPlayer =
                 new SimpleAudioPlayer("img\\1-17 - Battle! (Trainer Battle).wav", "hi");
 

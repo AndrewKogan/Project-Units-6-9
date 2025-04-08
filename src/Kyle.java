@@ -15,12 +15,10 @@ public class Kyle extends Ice{
             double random = Math.random();
             if (random <= .33) {
                 int randomIndex = (int) (Math.random() * rockMoveSet.size());
-                moveSet.add(rockMoveSet.get(randomIndex));
-                rockMoveSet.remove(randomIndex);
+                moveSet.add(rockMoveSet.remove(randomIndex));
             } else {
                 int randomIndex = (int) (Math.random() * iceMoveSet.size());
-                moveSet.add(iceMoveSet.get(randomIndex));
-                iceMoveSet.remove(randomIndex);
+                moveSet.add(iceMoveSet.remove(randomIndex));
             }
         }
         moveSet.add(new Move("Snow Storm", 100, "ice", 100, "none", 5));
